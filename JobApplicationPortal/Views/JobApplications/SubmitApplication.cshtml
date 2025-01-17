@@ -1,0 +1,19 @@
+﻿<form method="post" enctype="multipart/form-data" asp-action="SubmitApplication">
+    <div>
+        <label>Applicant Name:</label>
+        <input type="text" name="applicantName" required />
+    </div>
+    <div>
+        <label>Email:</label>
+        <input type="email" name="email" required />
+    </div>
+    <div>
+        <label>Job ID:</label>
+        <input type="text" name="jobId" required />
+    </div>
+    <div>
+        <label>Resume (PDF):</label>
+        <input type="file" name="resume" accept=".pdf" required />
+    </div>
+    <button type="submit">Submit Application</button>
+</form>
