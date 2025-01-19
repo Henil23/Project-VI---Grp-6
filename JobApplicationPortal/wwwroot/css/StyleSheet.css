@@ -1,0 +1,55 @@
+﻿body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0; /* Removes default browser margins */
+    padding: 0; /* Removes default browser padding */
+}
+
+h1 {
+    font-size: 25px;
+    font-weight: bold;
+    margin: 0; /* Optional: Removes default margin for a clean layout */
+}
+
+header {
+    overflow: hidden;
+    background-color: #f1f1f1;
+    padding: 20px 10px;
+    display: flex;
+    justify-content: space-between; /* Distributes space between elements */
+    align-items: center; /* Aligns items vertically in the center */
+}
+
+header a {
+    color: black;
+    text-align: center;
+    padding: 12px;
+    text-decoration: none;
+    font-size: 18px;
+    line-height: 25px;
+    border-radius: 4px;
+}
+
+header a:hover {
+    background-color: #ddd;
+    color: black;
+}
+
+.header-right {
+    float: right; /* Or, better: use flexbox */
+}
+
+/* HOMEPAGE */
+
+.home-container {
+    margin: 8px;
+}
+
+ul {
+    list-style-type: none;
+}
+
+/* FOOTER */
+
+footer {
+    margin: 8px;
+}
