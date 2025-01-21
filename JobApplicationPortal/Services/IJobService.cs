@@ -17,6 +17,8 @@
 //    }
 
 //}
+using JobApplicationPortal.Models;
+
 namespace JobApplicationPortal.Services
 {
     public interface IJobService

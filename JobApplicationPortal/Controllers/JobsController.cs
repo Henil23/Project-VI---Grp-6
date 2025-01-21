@@ -1,9 +1,8 @@
 ﻿using JobApplicationPortal.Services;
-//using JobPortal.Models;
-using JobPortal.Services;
+using JobApplicationPortal.Models;
 using Microsoft.AspNetCore.Mvc;
 
-namespace JobPortal.Controllers
+namespace JobApplicationPortal.Controllers
 {
     public class JobsController : Controller
     {

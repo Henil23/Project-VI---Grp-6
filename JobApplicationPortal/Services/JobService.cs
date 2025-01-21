@@ -1,5 +1,5 @@
 ﻿using JobApplicationPortal.Services;
-//using JobApplicationPortal.Models;
+using JobApplicationPortal.Models;
 using JobPortal.Repositories;
 
 namespace JobPortal.Services

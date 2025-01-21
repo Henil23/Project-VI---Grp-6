@@ -1,4 +1,4 @@
-﻿//using JobPortal.Models;
+﻿using JobApplicationPortal.Models;
 using MongoDB.Driver;
 
 namespace JobPortal.Repositories

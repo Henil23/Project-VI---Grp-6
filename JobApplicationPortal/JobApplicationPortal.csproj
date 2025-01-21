@@ -9,6 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="wwwroot\Static\student_collab_main.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Aspire.MongoDB.Driver" Version="9.0.0" />
     <PackageReference Include="AspNetCore.HealthChecks.MongoDb" Version="8.1.0" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
