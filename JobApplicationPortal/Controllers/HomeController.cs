@@ -8,5 +8,10 @@ namespace JobApplicationPortal.Controllers
         {
             return View();
         }
+        public IActionResult JobListings()
+        {
+            return View();
+        }
+
     }
 }

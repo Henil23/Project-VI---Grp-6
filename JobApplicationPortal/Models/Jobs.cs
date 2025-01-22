@@ -1,5 +1,6 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+
 namespace JobApplicationPortal.Models
 {
     public class Job
@@ -16,6 +17,9 @@ namespace JobApplicationPortal.Models
 
         [BsonElement("Company")]
         public string? Company { get; set; }
+
+        [BsonElement("Location")]
+        public string? Location { get; set; }
 
         [BsonElement("PostedDate")]
         public DateTime PostedDate { get; set; }
