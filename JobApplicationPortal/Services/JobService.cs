@@ -1,8 +1,7 @@
-﻿using JobApplicationPortal.Services;
-using JobApplicationPortal.Models;
-using JobPortal.Repositories;
+﻿using JobApplicationPortal.Models;
+using JobApplicationPortal.Repo;
 
-namespace JobPortal.Services
+namespace JobApplicationPortal.Services
 {
     public class JobService : IJobService
     {
