@@ -32,16 +32,17 @@
 
 //app.Run();
 
+using JobApplicationPortal.Repo;
 using JobApplicationPortal.Services;
-using JobPortal.Repositories;
-using JobPortal.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container
 builder.Services.AddSingleton<MongoDbContext>();
 builder.Services.AddScoped<JobRepo>();
+builder.Services.AddScoped<StudentRepo>();
 builder.Services.AddScoped<IJobService, JobService>();
+builder.Services.AddScoped<IStudentService, StudentService>();
 
 builder.Services.AddControllersWithViews();
 

@@ -1,7 +1,7 @@
 ﻿using JobApplicationPortal.Models;
 using MongoDB.Driver;
 
-namespace JobPortal.Repositories
+namespace JobApplicationPortal.Repo
 {
     public class JobRepo
     {

@@ -4,20 +4,28 @@
 
 <div class="signin-form">
     <h1>Sign In</h1>
-    <form action="/" method="post">
-        <input type="text" name="name" value="" placeholder="first name" /><br />
-        <input type="text" name="name" value="" placeholder="last name" /><br />
-        <input type="text" name="name" value="" placeholder="email" /><br />
-        <input type="date" name="name" value="" /><br />
-        <input type="text" name="name" value="" placeholder="address" /><br />
-        <input type="text" name="name" value="" placeholder="city" /><br />
-        <input type="text" name="name" value="" placeholder="country" /><br />
-        <select name="post-secondary" id="cars">
+
+    <!-- Display error message if present -->
+    @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+    {
+        <p class="error">@ViewBag.ErrorMessage</p>
+    }
+
+    <form asp-controller="SignIn" asp-action="OnPost" method="post">
+        <input type="text" name="firstName" value="" placeholder="first name" /><br />
+        <input type="text" name="lastName" value="" placeholder="last name" /><br />
+        <input type="text" name="email" value="" placeholder="email" /><br />
+        <input type="date" name="DOB" value="" /><br />
+        <input type="text" name="address" value="" placeholder="address" /><br />
+        <input type="text" name="city" value="" placeholder="city" /><br />
+        <input type="text" name="country" value="" placeholder="country" /><br />
+        <select name="post-secondary" id="schools">
             <option value="conestoga">Conestoga College</option>
             <option value="waterloo university">University of Waterloo</option>
             <option value="laurier">Laurier University</option>
             <option value="guelph university">University of Guelph</option>
         </select><br />
+        <input type="text" name="studentPassword" value="" placeholder="password" /><br />
         <input type="submit" value="Submit">
     </form>
 </div>

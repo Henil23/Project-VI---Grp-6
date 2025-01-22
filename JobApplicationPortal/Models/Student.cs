@@ -3,82 +3,53 @@ using MongoDB.Bson;
 
 namespace JobApplicationPortal.Models
 {
-    public class Student(int id, string firstName, string lastName, DateOnly dob,
-        string address, string city, string country, string school)
+    public class Student
     {
-        private int studentID = id;
-        private string? firstName = firstName;
-        private string? lastName = lastName;
-        private DateOnly? studentDOB = dob;
-        private string? studentAddress = address;
-        private string? studentCity = city;
-        private string? studentCountry = country;
-        private string? school;
-
-        // Getter and Setter for ID
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
-        public int StudentID
-        {
-            get { return studentID; }
-            set { studentID = value; }
-        }
+        public string StudentID { get; set; }
 
-        [BsonElement("firstName")]
-        // Getter and Setter for FirstName
-        public string? FirstName
-        {
-            get { return firstName; }
-            set { firstName = value; }
-        }
+        [BsonElement("studentPassword")]
+        public string StudentPassword { get; set; }
 
-        [BsonElement("lastName")]
-        // Getter and Setter for LastName
-        public string? LastName
-        {
-            get { return lastName; }
-            set { lastName = value; }
-        }
+        [BsonElement("studentFirstName")]
+        public string? FirstName { get; set; }
 
-        [BsonElement("DOB")]
-        // Getter and Setter for StudentDOB
-        public DateOnly? StudentDOB
-        {
-            get { return studentDOB; }
-            set { studentDOB = value; }
-        }
+        [BsonElement("studentLastName")]
+        public string? LastName { get; set; }
+
+        [BsonElement("studentEmail")]
+        public string? StudentEmail { get; set; }
+
+        [BsonElement("studentDOB")]
+        public DateOnly? StudentDOB { get; set; }
 
         [BsonElement("studentAddress")]
-        // Getter and Setter for StudentAddress
-        public string? StudentAddress
-        {
-            get { return studentAddress; }
-            set { studentAddress = value; }
-        }
+        public string? StudentAddress { get; set; }
 
         [BsonElement("studentCity")]
-        // Getter and Setter for StudentCity
-        public string? StudentCity
-        {
-            get { return studentCity; }
-            set { studentCity = value; }
-        }
+        public string? StudentCity { get; set; }
 
         [BsonElement("studentCountry")]
-        // Getter and Setter for StudentCountry
-        public string? StudentCountry
-        {
-            get { return studentCountry; }
-            set { studentCountry = value; }
-        }
+        public string? StudentCountry { get; set; }
 
-        [BsonElement("school")]
-        // Getter and Setter for School
-        public string? School
+        [BsonElement("studentEd")]
+        public string? School { get; set; }
+
+        // Constructor
+        public Student(string id, string password, string firstName, string lastName, string email, DateOnly? dob,
+            string address, string city, string country, string school)
         {
-            get { return school; }
-            set { school = value; }
+            StudentID = id;
+            StudentPassword = password;
+            FirstName = firstName;
+            LastName = lastName;
+            StudentEmail = email;
+            StudentDOB = dob;
+            StudentAddress = address;
+            StudentCity = city;
+            StudentCountry = country;
+            School = school;
         }
     }
 }
-
