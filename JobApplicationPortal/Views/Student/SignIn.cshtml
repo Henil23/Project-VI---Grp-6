@@ -1,15 +1,8 @@
 ﻿@model Student
+@Html.AntiForgeryToken()
 
 @{
     Layout = "_Layout";
-}
-
-<!-- Error will display on validating the form -->
-@if (!ViewData.ModelState.IsValid)
-{
-    <div class="validation-summary">
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-    </div>
 }
 
 <div class="signin-form-container">
@@ -48,6 +41,7 @@
             </div>
             <div class="form-group">
                 <input type="password" asp-for="StudentPassword" placeholder="Password" required />
+                <span class="text-danger">@Html.ValidationMessageFor(model => model.StudentPassword)</span>
             </div>
             <div class="form-group">
                 <button type="submit" class="submit-btn">Submit</button>

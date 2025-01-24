@@ -72,60 +72,6 @@ ul {
     height: 900px;
 }
 /* SIGN IN PAGE */
-. /* Main container styling */
-.signin-form-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    font-family: Arial, sans-serif;
-    background-color: #f4f6f9; /* Soft background color */
-    padding: 20px;
-    box-sizing: border-box;
-}
-
-/* Form box styling */
-.signin-form {
-    width: 100%;
-    max-width: 400px; /* Restrict form width */
-    background-color: white;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-    text-align: center;
-}
-
-.form-title {
-    margin-bottom: 20px;
-    font-size: 24px;
-    font-weight: bold;
-    color: #333;
-}
-
-/* Input and select field styling */
-.form-group {
-    margin-bottom: 15px;
-}
-
-    .form-group input,
-    .form-group select {
-        width: 100%;
-        padding: 12px;
-        border: 1px solid #ddd;
-        border-radius: 6px;
-        font-size: 14px;
-        box-sizing: border-box;
-        transition: border-color 0.3s, box-shadow 0.3s;
-    }
-
-        .form-group input:focus,
-        .form-group select:focus {
-            outline: none;
-            border-color: #007bff;
-            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
-        }
-
-/* SIGN IN PAGE */
 
 /* Main container styling */
 .signin-form-container {
@@ -197,4 +143,11 @@ ul {
 .submit-btn:hover {
     background-color: #0056b3;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* password validation error */
+.text-danger {
+    color: red;
+    font-size: 12px;
+    font-weight: bold;
 }

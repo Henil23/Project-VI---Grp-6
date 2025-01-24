@@ -12,6 +12,7 @@ namespace JobApplicationPortal.Models
 
         [BsonElement("studentPassword")]
         [Required(ErrorMessage = "Password is required.")]
+        [StringLength(6, MinimumLength = 6, ErrorMessage = "Password must be over 6 characters long.")]
         public string? StudentPassword { get; set; }
 
         [BsonElement("studentFirstName")]
