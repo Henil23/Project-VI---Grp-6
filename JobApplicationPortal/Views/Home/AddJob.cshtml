@@ -1,0 +1,97 @@
+﻿@model Job
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Add Job Posting";
+}
+
+<div class="add-job-container">
+    <h1>@ViewData["Title"]</h1>
+    <form asp-action="Create" asp-controller="Jobs" method="post" class="add-job-form">
+        <div class="form-group">
+            <label for="Title">Job Title</label>
+            <input type="text" id="Title" name="Title" class="form-control" required />
+        </div>
+
+        <div class="form-group">
+            <label for="Company">Company Name</label>
+            <input type="text" id="Company" name="Company" class="form-control" required />
+        </div>
+
+        <div class="form-group">
+            <label for="Location">Location</label>
+            <input type="text" id="Location" name="Location" class="form-control" required />
+        </div>
+
+        <div class="form-group">
+            <label for="Description">Job Description</label>
+            <textarea id="Description" name="Description" class="form-control" rows="5" required></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="PostedDate">Posted Date</label>
+            <input type="date" id="PostedDate" name="PostedDate" class="form-control" required />
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="submit-btn">Add Job</button>
+        </div>
+    </form>
+</div>
+
+<style>
+    .add-job-container {
+        max-width: 600px;
+        margin: 50px auto;
+        padding: 20px;
+        background-color: #f9f9f9;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        font-family: 'Arial', sans-serif;
+    }
+
+    h1 {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #333;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-group label {
+        font-weight: bold;
+        margin-bottom: 5px;
+        display: block;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        font-size: 14px;
+    }
+
+    .form-actions {
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    .submit-btn {
+        background-color: #28a745;
+        color: white;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .submit-btn:hover {
+        background-color: #218838;
+    }
+</style>

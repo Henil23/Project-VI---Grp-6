@@ -1,4 +1,6 @@
-﻿@{
+﻿@model IEnumerable<JobApplicationPortal.Models.Job>
+
+@{
     Layout = "_Layout";
     ViewData["Title"] = "Browse Job Listings";
 }
@@ -6,152 +8,37 @@
 <div class="job-listings-container">
     <h1>@ViewData["Title"]</h1>
     <div class="search-bar">
-        <input type="text" placeholder="Job Title or Keywords" class="search-input" />
-        <input type="text" placeholder="Location" class="search-input" />
-        <button class="search-btn">Search</button>
+        <input type="text" placeholder="Job Title or Keywords" id="title-filter" class="search-input" />
+        <input type="text" placeholder="Location" id="location-filter" class="search-input" />
+        <button class="search-btn" onclick="filterJobs()">Search</button>
     </div>
-    <div class="job-listings">
-        <div class="job-card">
-            <h3>Software Developer</h3>
-            <p>Company: ABC Tech</p>
-            <p>Location: New York, NY</p>
-            <p>Posted: 3 days ago</p>
-            <button class="view-btn">View Details</button>
-            <button class="apply-btn">Apply</button>
-        </div>
-        <div class="job-card">
-            <h3>Data Analyst</h3>
-            <p>Company: XYZ Analytics</p>
-            <p>Location: San Francisco, CA</p>
-            <p>Posted: 3 days ago</p>
-            <button class="view-btn">View Details</button>
-            <button class="apply-btn">Apply</button>
-        </div>
-        <!-- Add more job cards -->
+    <div id="job-listings" class="job-listings">
+        @foreach (var job in Model)
+        {
+            <div class="job-card" data-title="@job.Title" data-location="@job.Location">
+                <h3>@job.Title</h3>
+                <p>Company: @job.Company</p>
+                <p>Location: @job.Location</p>
+                <p>Posted: @job.PostedDate.ToString("MMMM dd, yyyy")</p>
+                <a href="@Url.Action("Details", "Jobs", new { id = job.Id })" class="view-btn">View Details</a>
+                <button class="apply-btn">Apply</button>
+            </div>
+        }
     </div>
 </div>
-<style>
-    /* Container styling for the job listings page */
-    .job-listings-container {
-        padding: 40px;
-        font-family: 'Arial', sans-serif;
-        background-color: #f9f9f9;
+
+<script>
+    function filterJobs() {
+        const titleFilter = document.getElementById('title-filter').value.toLowerCase();
+        const locationFilter = document.getElementById('location-filter').value.toLowerCase();
+        const jobCards = document.querySelectorAll('.job-card');
+
+        jobCards.forEach(card => {
+            const title = card.getAttribute('data-title').toLowerCase();
+            const location = card.getAttribute('data-location').toLowerCase();
+            const matches = (!titleFilter || title.includes(titleFilter)) &&
+                            (!locationFilter || location.includes(locationFilter));
+            card.style.display = matches ? '' : 'none';
+        });
     }
-
-    /* Title styling */
-    h1 {
-        text-align: center;
-        color: #333;
-        margin-bottom: 30px;
-    }
-
-    /* Search bar styling */
-    .search-bar {
-        display: flex;
-        gap: 10px;
-        margin-bottom: 30px;
-        justify-content: center;
-    }
-
-    .search-input {
-        padding: 12px;
-        width: 300px;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        font-size: 16px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
-
-        .search-input:focus {
-            outline: none;
-            border-color: #007bff;
-            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
-        }
-
-    .search-btn {
-        padding: 12px 20px;
-        background-color: #007bff;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        padding: 12px 20px;
-        font-size: 16px;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
-
-        .search-btn:hover {
-            background-color: #0056b3;
-        }
-
-    /* Job listings grid */
-    .job-listings {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-        gap: 20px;
-    }
-
-    /* Job card styling */
-    .job-card {
-        background-color: white;
-        border: 1px solid #ddd;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-
-        .job-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .job-card h3 {
-            margin-top: 0;
-            color: #333;
-            font-size: 20px;
-        }
-
-        .job-card p {
-            margin: 5px 0;
-            color: #555;
-            font-size: 14px;
-        }
-
-    .view-btn {
-        display: inline-block;
-        background-color: #28a745;
-        color: white;
-        border: none;
-        padding: 12px 20px;
-        border-radius: 5px;
-        font-size: 14px;
-        font-weight: bold;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-        text-align: center;
-        text-decoration: none;
-        margin-right: 100px;
-    }
-
-    .apply-btn {
-        display: inline-block;
-        background-color: #007bff;
-        color: white;
-        border: none;
-        padding: 12px 20px;
-        border-radius: 5px;
-        font-size: 14px;
-        font-weight: bold;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-        text-align: center;
-        text-decoration: none;
-      
-    }
-
-        .apply-btn:hover {
-            background-color: #0056b3;
-        }
-</style>
+</script>

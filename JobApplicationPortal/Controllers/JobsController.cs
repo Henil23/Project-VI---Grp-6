@@ -89,6 +89,22 @@ namespace JobApplicationPortal.Controllers
             }
             return View(job); // Pass the job to the Details view
         }
+        [HttpPost]
+        public async Task<IActionResult> Create(Job job)
+        {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToAction("AddJob", job); // Return the form with validation errors
+            }
+
+            job.Id = Guid.NewGuid().ToString(); // Generate a unique ID for the job
+            job.PostedDate = DateTime.UtcNow;  // Set the posted date to the current time
+
+            await _jobService.CreateJobAsync(job); // Save the job to the database
+
+            return RedirectToAction("Index"); // Redirect to the job listings page
+        }
+
     }
 
 }

@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.12.35506.116
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JobApplicationPortal", "JobApplicationPortal\JobApplicationPortal.csproj", "{4EE3C2AC-A42F-4C5A-A00B-2CE72410D5A9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JobApplicationPortal", "JobApplicationPortal\JobApplicationPortal.csproj", "{4EE3C2AC-A42F-4C5A-A00B-2CE72410D5A9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -18,5 +18,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {14D4AAC7-C03F-484C-BDCF-B11BEA8602A3}
 	EndGlobalSection
 EndGlobal
