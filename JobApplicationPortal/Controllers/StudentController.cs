@@ -34,11 +34,18 @@ namespace JobApplicationPortal.Controllers
                 return View("SignIn", student); // Return to form with validation errors
             }
 
+            // student is signed in
+            student.IsSignedIn = true;
+
             // Use the service to save the student data
             await _studentService.CreateStudentAsync(student);
 
+            // Traverse data to homepage
+            TempData["FirstName"] = student.FirstName;
+            TempData["SignedIn"] = student.IsSignedIn;
+
             // Redirect to success page or student dashboard
-            return RedirectToAction("JobListings", "Home");
+            return RedirectToAction("Index", "Home");
         }
     }
 }

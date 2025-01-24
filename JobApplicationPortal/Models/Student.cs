@@ -12,7 +12,7 @@ namespace JobApplicationPortal.Models
 
         [BsonElement("studentPassword")]
         [Required(ErrorMessage = "Password is required.")]
-        [StringLength(6, MinimumLength = 6, ErrorMessage = "Password must be over 6 characters long.")]
+        [StringLength(32, MinimumLength = 6, ErrorMessage = "Password must be over 6 characters long.")]
         public string? StudentPassword { get; set; }
 
         [BsonElement("studentFirstName")]
@@ -48,12 +48,14 @@ namespace JobApplicationPortal.Models
         [Required(ErrorMessage = "School is required.")]
         public string? School { get; set; }
 
+        public bool IsSignedIn { get; set; }
+
         // Parameterless constructor
         public Student() { }
 
         // Constructor
         public Student(string id, string password, string firstName, string lastName, string email, DateTime dob,
-            string address, string city, string country, string school)
+            string address, string city, string country, string school, bool isSignedIn)
         {
             StudentID = id;
             StudentPassword = password;
@@ -65,6 +67,7 @@ namespace JobApplicationPortal.Models
             StudentCity = city;
             StudentCountry = country;
             School = school;
+            IsSignedIn = false;
         }
     }
 }
