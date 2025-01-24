@@ -1,4 +1,5 @@
-﻿using MongoDB.Driver;
+﻿using JobApplicationPortal.Models;
+using MongoDB.Driver;
 
 public class MongoDbContext
 {
@@ -17,4 +18,6 @@ public class MongoDbContext
     {
         return _database.GetCollection<T>(collectionName);
     }
+    // Collection for student data
+    public IMongoCollection<Student> Students => _database.GetCollection<Student>("Students");
 }

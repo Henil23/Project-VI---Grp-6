@@ -1,0 +1,57 @@
+﻿@model Student
+
+@{
+    Layout = "_Layout";
+}
+
+<!-- Error will display on validating the form -->
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="validation-summary">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    </div>
+}
+
+<div class="signin-form-container">
+    <div class="signin-form">
+        <h1 class="form-title">Sign In</h1>
+        <form asp-action="SubmitStudentForm" asp-controller="Student" method="post">
+            <div class="form-group">
+                <input type="text" asp-for="FirstName" placeholder="First Name" required />
+            </div>
+            <div class="form-group">
+                <input type="text" asp-for="LastName" placeholder="Last Name" required />
+            </div>
+            <div class="form-group">
+                <input type="email" asp-for="StudentEmail" placeholder="Email" required />
+            </div>
+            <div class="form-group">
+                <input type="date" asp-for="StudentDOB" required />
+            </div>
+            <div class="form-group">
+                <input type="text" asp-for="StudentAddress" placeholder="Address" required />
+            </div>
+            <div class="form-group">
+                <input type="text" asp-for="StudentCity" placeholder="City" required />
+            </div>
+            <div class="form-group">
+                <input type="text" asp-for="StudentCountry" placeholder="Country" required />
+            </div>
+            <div class="form-group">
+                <select asp-for="School" id="post-secondary" required>
+                    <option value="" disabled selected>Post-Secondary Institution</option>
+                    <option value="conestoga">Conestoga College</option>
+                    <option value="waterloo university">University of Waterloo</option>
+                    <option value="laurier">Laurier University</option>
+                    <option value="guelph university">University of Guelph</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <input type="password" asp-for="StudentPassword" placeholder="Password" required />
+            </div>
+            <div class="form-group">
+                <button type="submit" class="submit-btn">Submit</button>
+            </div>
+        </form>
+    </div>
+</div>

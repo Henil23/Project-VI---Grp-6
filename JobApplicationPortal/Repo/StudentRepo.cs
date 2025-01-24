@@ -16,6 +16,7 @@ namespace JobApplicationPortal.Repo
         public async Task AddStudentAsync(Student student)
         {
             await _studentCollection.InsertOneAsync(student);
+            Console.WriteLine($"Inserting student: {student.FirstName} {student.LastName}");
         }
 
         public async Task UpdateStudentAsync(string id, Student student)
