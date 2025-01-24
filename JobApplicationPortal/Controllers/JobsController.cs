@@ -90,4 +90,5 @@ namespace JobApplicationPortal.Controllers
             return View(job); // Pass the job to the Details view
         }
     }
+
 }

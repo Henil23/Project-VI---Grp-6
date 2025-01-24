@@ -1,0 +1,80 @@
+﻿
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Apply for Job";
+}
+
+<div class="apply-container">
+    <h1>Apply for @Model.JobTitle</h1>
+    <p><strong>Company:</strong> @Model.Company</p>
+    <p><strong>Location:</strong> @Model.Location</p>
+
+    <form method="post" action="/JobApplications/SubmitApplication">
+        <input type="hidden" name="JobId" value="@Model.JobId" />
+
+        <div class="form-group">
+            <label for="FullName">Full Name:</label>
+            <input type="text" id="FullName" name="FullName" class="form-control" required />
+        </div>
+
+        <div class="form-group">
+            <label for="Email">Email:</label>
+            <input type="email" id="Email" name="Email" class="form-control" required />
+        </div>
+
+        <div class="form-group">
+            <label for="Resume">Upload Resume:</label>
+            <input type="file" id="Resume" name="Resume" class="form-control" required />
+        </div>
+
+        <button type="submit" class="apply-submit-btn">Submit Application</button>
+    </form>
+</div>
+
+<style>
+    .apply-container {
+        padding: 40px;
+        font-family: Arial, sans-serif;
+        background-color: #f9f9f9;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+        color: #333;
+        margin-bottom: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 8px;
+        color: #555;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 14px;
+    }
+
+    .apply-submit-btn {
+        background-color: #007bff;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        border: none;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+        .apply-submit-btn:hover {
+            background-color: #0056b3;
+        }
+</style>
