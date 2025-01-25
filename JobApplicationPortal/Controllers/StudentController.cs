@@ -40,9 +40,9 @@ namespace JobApplicationPortal.Controllers
             // Use the service to save the student data
             await _studentService.CreateStudentAsync(student);
 
-            // Traverse data to homepage
-            TempData["FirstName"] = student.FirstName;
-            TempData["SignedIn"] = student.IsSignedIn;
+            // Store data in session
+            HttpContext.Session.SetString("FirstName", student.FirstName);
+            HttpContext.Session.SetString("IsSignedIn", student.IsSignedIn.ToString());
 
             // Redirect to success page or student dashboard
             return RedirectToAction("Index", "Home");

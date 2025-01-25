@@ -46,12 +46,24 @@ builder.Services.AddScoped<IStudentService, StudentService>();
 
 builder.Services.AddControllersWithViews();
 
+// transfer data over memory cache with a time limit
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30); // Set session timeout
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true; // Necessary for GDPR compliance
+});
+
 var app = builder.Build();
 
 // Middleware pipeline configuration
 app.UseStaticFiles(); // Serve static files like CSS, JS, etc.
 
 app.UseRouting();
+
+// uses the implemented session state
+app.UseSession();
 
 app.MapControllerRoute(
     name: "default",

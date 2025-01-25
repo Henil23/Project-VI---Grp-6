@@ -5,26 +5,18 @@ namespace JobApplicationPortal.Controllers
 {
     public class HomeController : Controller
     {
-        public IActionResult Index(Student student)
+        public IActionResult Index()
         {
-            // If a valid Student object is provided and the student is signed in
-            if (student != null && student.IsSignedIn)
-            {
-                // Pass the student's details to ViewData for display
-                ViewData["FirstName"] = student.FirstName;
-                ViewData["SignedIn"] = true; // Explicitly mark as signed in
-                ViewData["Student"] = student;
-            }
-            else
-            {
-                // Fallback to TempData if no valid Student object is provided
-                ViewData["FirstName"] = TempData["FirstName"];
-                ViewData["SignedIn"] = TempData["SignedIn"] ?? false;
-            }
+            // Retrieve session data
+            string? firstName = HttpContext.Session.GetString("FirstName");
+            string? isSignedIn = HttpContext.Session.GetString("IsSignedIn");
+
+            // Pass session data to the view
+            ViewData["FirstName"] = firstName;
+            ViewData["IsSignedIn"] = isSignedIn;
 
             // Return the view, passing the student object
-            return View(student);
-
+            return View();
         }
         public IActionResult JobListings()
         {

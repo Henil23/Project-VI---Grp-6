@@ -1,10 +1,4 @@
-﻿@using JobApplicationPortal.Models
-@{
-    var isSignedIn = ViewData["SignedIn"] != null && (bool)ViewData["SignedIn"];
-    var firstName = ViewData["FirstName"] as string;
-}
-
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
@@ -16,14 +10,13 @@
     <header>
         <h1>Job Portal</h1>
         <nav>
-            @if (isSignedIn)
+            @if (ViewData["IsSignedIn"] != null && ViewData["IsSignedIn"].ToString() == "True")
             {
-                <span>Welcome, @firstName!</span>
+                <span>Welcome, @ViewData["FirstName"]!</span>
             }
             <a href="/">Home</a>
-            <a href="@Url.Action("SignIn", "Student")">Sign Up</a>
-            <a href="#"> Sign In</a>
-            <a href="#"> Employer</a>
+            <a href="@Url.Action("SignIn", "Student")">Student</a>
+            <a href="#">Employer</a>
         </nav>
     </header>
 
