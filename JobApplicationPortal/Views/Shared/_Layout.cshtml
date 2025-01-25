@@ -10,9 +10,13 @@
     <header>
         <h1>Job Portal</h1>
         <nav>
+            @if (ViewData["IsSignedIn"] != null && ViewData["IsSignedIn"].ToString() == "True")
+            {
+                <span>Welcome, @ViewData["FirstName"]!</span>
+            }
             <a href="/">Home</a>
-            <a href="/SignIn">Sign In</a>
-       
+            <a href="@Url.Action("SignIn", "Student")">Student</a>
+            <a href="#">Employer</a>
         </nav>
     </header>
 
@@ -21,7 +25,7 @@
     </main>
 
     <footer>
-        <p>&copy; 2025 Job Portal</p>
+        <p>&copy; 2025 Job Portal</>
     </footer>
 </body>
 </html>

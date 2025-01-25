@@ -1,4 +1,5 @@
-﻿using JobApplicationPortal.Models;
+﻿using Amazon.Runtime.Internal.Auth;
+using JobApplicationPortal.Models;
 using JobApplicationPortal.Repo;
 
 namespace JobApplicationPortal.Services
@@ -22,9 +23,7 @@ namespace JobApplicationPortal.Services
             await _studentRepository.UpdateStudentAsync(id, student);
         }
 
-        public async Task DeleteStudentAsync(string id)
-        {
-            await _studentRepository.DeleteStudentAsync(id);
-        }
+        public async Task<bool> DeleteStudentAsync(string email, string password) => await _studentRepository.DeleteStudentAsync(email, password);
+
     }
 }
