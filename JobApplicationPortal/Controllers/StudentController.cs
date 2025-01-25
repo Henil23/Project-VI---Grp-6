@@ -3,6 +3,7 @@ using JobApplicationPortal.Models;
 using JobApplicationPortal.Services;
 using System.Threading.Tasks;
 using MongoDB.Bson;
+using JobApplicationPortal.Repo;
 
 namespace JobApplicationPortal.Controllers
 {
@@ -20,6 +21,12 @@ namespace JobApplicationPortal.Controllers
         public IActionResult SignIn()
         {
             return View();
+        }
+
+        [HttpGet]
+        public IActionResult DeleteStudentForm()
+        {
+            return View("DeleteStudentInfo");
         }
 
         // POST: Handle student form submission
@@ -47,5 +54,37 @@ namespace JobApplicationPortal.Controllers
             // Redirect to success page or student dashboard
             return RedirectToAction("Index", "Home");
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteStudent(string email, string password)
+        {
+            if (ModelState.IsValid)
+            {
+                // Try to delete the student by email and password
+                var isDeleted = await _studentService.DeleteStudentAsync(email, password);
+
+                if (isDeleted)
+                {
+                    // If deletion was successful
+                    ViewBag.Message = "Student account has been deleted successfully.";
+                }
+                else
+                {
+                    // If student was not found or not deleted
+                    ViewBag.Message = "Error: No student found with the provided email and password.";
+                }
+
+                // Return the view with a message
+                return View("DeleteStudentInfo");
+            }
+            else
+            {
+                // If the model is invalid
+                ViewBag.Message = "Error: Student information is incomplete or invalid.";
+                return View("DeleteStudentInfo");
+            }
+        }
+
     }
 }
