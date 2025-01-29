@@ -7,6 +7,7 @@
 
 <div class="add-job-container">
     <h1>@ViewData["Title"]</h1>
+
     <form asp-action="Create" asp-controller="Jobs" method="post" class="add-job-form">
         <div class="form-group">
             <label for="Title">Job Title</label>
@@ -33,6 +34,12 @@
             <input type="date" id="PostedDate" name="PostedDate" class="form-control" required />
         </div>
 
+        <!-- New field to specify the number of postings -->
+        <div class="form-group">
+            <label for="NumberOfPostings">Number of Postings</label>
+            <input type="number" id="NumberOfPostings" name="NumberOfPostings" class="form-control" min="1" required />
+        </div>
+
         <div class="form-actions">
             <button type="submit" class="submit-btn">Add Job</button>
         </div>
@@ -40,14 +47,19 @@
 </div>
 
 <style>
+    body {
+        margin: 0;
+        font-family: 'Arial', sans-serif;
+        background-color: #f4f4f4;
+    }
+
     .add-job-container {
         max-width: 600px;
         margin: 50px auto;
         padding: 20px;
-        background-color: #f9f9f9;
+        background-color: #ffffff;
         border-radius: 10px;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        font-family: 'Arial', sans-serif;
     }
 
     h1 {
@@ -58,16 +70,21 @@
 
     .form-group {
         margin-bottom: 15px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
 
-    .form-group label {
-        font-weight: bold;
-        margin-bottom: 5px;
-        display: block;
-    }
+        .form-group label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            width: 100%;
+            text-align: left;
+        }
 
     .form-control {
         width: 100%;
+        max-width: 500px;
         padding: 10px;
         border: 1px solid #ddd;
         border-radius: 5px;
@@ -91,7 +108,7 @@
         transition: background-color 0.3s ease;
     }
 
-    .submit-btn:hover {
-        background-color: #218838;
-    }
+        .submit-btn:hover {
+            background-color: #218838;
+        }
 </style>
