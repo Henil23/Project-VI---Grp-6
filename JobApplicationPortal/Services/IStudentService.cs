@@ -1,4 +1,5 @@
 ﻿using JobApplicationPortal.Models;
+using MongoDB.Driver;
 
 namespace JobApplicationPortal.Services
 {
@@ -6,6 +7,6 @@ namespace JobApplicationPortal.Services
     {
         Task CreateStudentAsync(Student student);
         Task UpdateStudentAsync(string id, Student student);
-        Task<bool>DeleteStudentAsync(string email, string password);
+        Task<DeleteResult> DeleteStudentAsync(string id);
     }
 }

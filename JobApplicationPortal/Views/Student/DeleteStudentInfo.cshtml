@@ -1,28 +1,36 @@
 ﻿@{
     Layout = "_Layout";
+    var studentId = ViewBag.StudentId; // Ensure this is passed from the controller
 }
 
 <div class="signin-form-container">
     <div class="signin-form">
         <h1 class="form-title">Delete Account Confirmation</h1>
-        <form asp-action="DeleteStudent" asp-controller="Student" method="post">
-            <div class="form-group">
-                <!-- Directly use the name attributes for email and password -->
-                <input type="email" name="email" placeholder="Email" required />
-            </div>
-            <div class="form-group">
-                <input type="password" name="password" placeholder="Password" required />
-                <span class="text-danger"></span> <!-- Optional: Add validation message here -->
-            </div>
-            <div class="form-group">
-                <button type="submit" class="submit-btn">Submit</button>
-            </div>
-            <div>
-                @if (ViewBag.Message != null)
-                {
-                    <p style="color: red;">@ViewBag.Message</p>
-                }
-            </div>
-        </form>
+        <div class="form-group">
+            <label>Are you sure you want to delete your account?</label>
+        </div>
+        <div class="form-group">
+            <button id="delete-btn" class="submit-btn btn-danger">Delete</button>
+        </div>
+        <div id="delete-message"></div>
     </div>
 </div>
+
+<script>
+    document.getElementById("delete-btn").addEventListener("click", function (event) {
+        event.preventDefault(); // Prevent default button behavior
+
+        fetch('/Student/DeleteStudent?Id=@studentId', {
+            method: 'DELETE'
+        })
+        .then(response => {
+            if (response.status === 204) {
+                document.getElementById("delete-message").innerHTML = "<p style='color: green;'>Account deleted successfully.</p>";
+                setTimeout(() => { window.location.href = "/Home/Index"; }, 2000);
+            } else {
+                document.getElementById("delete-message").innerHTML = "<p style='color: red;'>Failed to delete account.</p>";
+            }
+        })
+        .catch(error => console.error("Error:", error));
+    });
+</script>

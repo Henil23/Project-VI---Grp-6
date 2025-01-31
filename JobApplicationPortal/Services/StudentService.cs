@@ -1,6 +1,7 @@
 ﻿using Amazon.Runtime.Internal.Auth;
 using JobApplicationPortal.Models;
 using JobApplicationPortal.Repo;
+using MongoDB.Driver;
 
 namespace JobApplicationPortal.Services
 {
@@ -23,7 +24,11 @@ namespace JobApplicationPortal.Services
             await _studentRepository.UpdateStudentAsync(id, student);
         }
 
-        public async Task<bool> DeleteStudentAsync(string email, string password) => await _studentRepository.DeleteStudentAsync(email, password);
+        public async Task<DeleteResult> DeleteStudentAsync(string id)
+        {
+            var result = await _studentRepository.DeleteStudentAsync(id);
+            return result;
+        }
 
     }
 }
