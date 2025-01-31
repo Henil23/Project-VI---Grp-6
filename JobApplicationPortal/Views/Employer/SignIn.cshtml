@@ -1,0 +1,48 @@
+﻿@model Employer
+@Html.AntiForgeryToken()
+
+@{
+    Layout = "_Layout";
+}
+
+<div class="signin-form-container">
+    <div class="signin-form">
+        <h1 class="form-title">Sign In</h1>
+        <form asp-action="SubmitEmployerForm" asp-controller="Employer" method="post">
+
+            <!-- First Name -->
+            <div class="form-group">
+                <input type="text" asp-for="FirstName" placeholder="First Name" required />
+            </div>
+
+            <!-- Last Name -->
+            <div class="form-group">
+                <input type="text" asp-for="LastName" placeholder="Last Name" required />
+            </div>
+
+            <!-- Email -->
+            <div class="form-group">
+                <input type="email" asp-for="EmployerEmail" placeholder="Email" required />
+                <span class="text-danger">@Html.ValidationMessageFor(model => model.EmployerEmail)</span>
+            </div>
+
+            <!-- Password -->
+            <div class="form-group">
+                <input type="password" asp-for="EmployerPassword" placeholder="Password" required />
+                <span class="text-danger">@Html.ValidationMessageFor(model => model.EmployerPassword)</span>
+            </div>
+
+            <!-- Company Name -->
+            <div class="form-group">
+                <input type="text" asp-for="CompanyName" placeholder="Company Name" required />
+            </div>
+
+            <div class="form-group">
+                <button type="submit" class="submit-btn">Submit</button>
+            </div>
+        </form>
+        <div class="employer-option-links">
+            <a href="@Url.Action("DeleteEmployerForm","Employer")">Delete Account</a>
+        </div>
+    </div>
+</div>

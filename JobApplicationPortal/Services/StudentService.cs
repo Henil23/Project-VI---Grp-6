@@ -25,5 +25,6 @@ namespace JobApplicationPortal.Services
 
         public async Task<bool> DeleteStudentAsync(string email, string password) => await _studentRepository.DeleteStudentAsync(email, password);
 
+     
     }
 }

@@ -43,6 +43,8 @@ builder.Services.AddScoped<JobRepo>();
 builder.Services.AddScoped<StudentRepo>();
 builder.Services.AddScoped<IJobService, JobService>();
 builder.Services.AddScoped<IStudentService, StudentService>();
+builder.Services.AddScoped<IEmployerService, EmployerService>();
+builder.Services.AddScoped<EmployerRepo>();
 
 builder.Services.AddControllersWithViews();
 
