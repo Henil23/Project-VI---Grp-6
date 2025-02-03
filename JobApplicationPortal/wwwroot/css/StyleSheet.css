@@ -56,6 +56,40 @@ footer {
     background-color: #f1f1f1;
 }
 
+footer {
+    display: flex;
+    justify-content: space-between; /* Distributes space between elements */
+    align-items: center; /* Vertically centers the content */
+    padding: 10px 20px; /* Adds some padding around the content */
+    background-color: #f1f1f1;
+    width: 100%;
+    box-sizing: border-box; /* Ensures padding is included in the width calculation */
+    overflow: hidden; /* Prevents overflow */
+}
+
+footer .footer-left {
+    flex-grow: 1; /* This will push the copyright text to the center */
+    text-align: center;
+}
+
+footer .footer-right {
+    text-align: right; /* Align the contact us link to the right */
+    flex-shrink: 0; /* Prevents this part from shrinking */
+}
+
+footer a {
+    text-decoration: none;
+    color: black;
+    font-size: 16px;
+    padding: 8px 12px;
+    border-radius: 4px;
+}
+
+footer a:hover {
+    background-color: #ddd;
+    color: black;
+}
+
 /* HOMEPAGE */
 
 .home-container {
