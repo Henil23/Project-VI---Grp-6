@@ -1,1 +1,3 @@
 ﻿echo ".vs/" >> .gitignore
+echo ".idea/" >> .gitignore
+echo ".vscode/" >> .gitignore
