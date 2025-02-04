@@ -1,0 +1,28 @@
+﻿@model Employer
+
+@{
+    Layout = "_Layout";
+}
+
+<div class="signin-form-container">
+    <div class="signin-form">
+        <h1 class="form-title">Employer Sign Up</h1>
+        <form asp-action="EmployerSignUp" asp-controller="Employer" method="post">
+            <div class="form-group">
+                <input type="text" asp-for="CompanyName" placeholder="Company Name" required />
+                <span asp-validation-for="CompanyName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="text" asp-for="EmployerEmail" placeholder="Email" required />
+                <span asp-validation-for="EmployerEmail" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="password" asp-for="EmployerPassword" placeholder="Password" required />
+                <span asp-validation-for="EmployerPassword" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="submit-btn">Submit</button>
+            </div>
+        </form>
+    </div>
+</div>

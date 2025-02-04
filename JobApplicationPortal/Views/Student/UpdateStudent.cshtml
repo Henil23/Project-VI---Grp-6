@@ -1,0 +1,103 @@
+﻿@{
+    Layout = "_Layout";
+    var message = ViewBag.ErrorMessage;
+}
+
+<div class="signin-form-container">
+    <div class="signin-form">
+        <h1 class="form-title">Update Your Account</h1>
+        <p>@TempData["ErrorMessage"]</p>
+        <form id="updateStudentForm">
+            @Html.AntiForgeryToken()
+            <div class="form-group">
+                <input type="text" id="FirstName" name="FirstName" placeholder="First Name" required />
+            </div>
+            <div class="form-group">
+                <input type="text" id="LastName" name="LastName" placeholder="Last Name" required />
+            </div>
+            <div class="form-group">
+                <input type="email" id="StudentEmail" name="StudentEmail" placeholder="Email" required />
+            </div>
+            <div class="form-group">
+                <input type="date" id="StudentDOB" name="StudentDOB" required />
+            </div>
+            <div class="form-group">
+                <input type="text" id="StudentAddress" name="StudentAddress" placeholder="Address" required />
+            </div>
+            <div class="form-group">
+                <input type="text" id="StudentCity" name="StudentCity" placeholder="City" required />
+            </div>
+            <div class="form-group">
+                <input type="text" id="StudentCountry" name="StudentCountry" placeholder="Country" required />
+            </div>
+            <div class="form-group">
+                <select id="School" name="School" required>
+                    <option value="" disabled selected>Post-Secondary Institution</option>
+                    <option value="conestoga">Conestoga College</option>
+                    <option value="waterloo university">University of Waterloo</option>
+                    <option value="laurier">Laurier University</option>
+                    <option value="guelph university">University of Guelph</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <input type="password" id="StudentPassword" name="StudentPassword" placeholder="Password" required />
+            </div>
+            <div class="form-group">
+                <button type="submit" class="submit-btn">Submit</button>
+            </div>
+        </form>
+        <div class="student-option-links">
+            <a href="@Url.Action("DeleteStudentForm","Student")">Delete Account</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById("updateStudentForm").addEventListener("submit", async function(event) {
+        event.preventDefault(); // Prevent the form from submitting the normal way
+
+        const formData = new FormData(this);
+        const studentData = {};
+
+        // Convert form data to JSON
+        formData.forEach((value, key) => {
+            studentData[key] = value;
+        });
+
+        // Prepare the JSON Patch document
+        const patchDocument = [
+            { "op": "replace", "path": "/FirstName", "value": studentData.FirstName },
+            { "op": "replace", "path": "/LastName", "value": studentData.LastName },
+            { "op": "replace", "path": "/StudentEmail", "value": studentData.StudentEmail },
+            { "op": "replace", "path": "/StudentDOB", "value": studentData.StudentDOB },
+            { "op": "replace", "path": "/StudentAddress", "value": studentData.StudentAddress },
+            { "op": "replace", "path": "/StudentCity", "value": studentData.StudentCity },
+            { "op": "replace", "path": "/StudentCountry", "value": studentData.StudentCountry },
+            { "op": "replace", "path": "/School", "value": studentData.School },
+            { "op": "replace", "path": "/StudentPassword", "value": studentData.StudentPassword }
+        ];
+
+        // Get the CSRF token using vanilla JavaScript
+        const csrfToken = document.querySelector('input[name="__RequestVerificationToken"]').value;
+
+        // Send the PATCH request
+        const response = await fetch('@Url.Action("UpdateStudent", "Student")', {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'RequestVerificationToken': csrfToken // Add CSRF token
+            },
+            body: JSON.stringify(patchDocument)
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            // Handle successful update
+            alert('Student updated successfully');
+        } else {
+            // Handle errors
+            alert('Error updating student: ' + result.errors);
+        }
+    });
+</script>
