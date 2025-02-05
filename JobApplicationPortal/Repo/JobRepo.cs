@@ -19,7 +19,7 @@ namespace JobApplicationPortal.Repo
 
         public async Task<Job> GetJobByIdAsync(string id)
         {
-            return await _jobsCollection.Find(job => job.Id == id).FirstOrDefaultAsync();
+            return await _jobsCollection.Find(job => job.JobID == id).FirstOrDefaultAsync();
         }
 
         public async Task AddJobAsync(Job job)
@@ -29,12 +29,12 @@ namespace JobApplicationPortal.Repo
 
         public async Task UpdateJobAsync(string id, Job job)
         {
-            await _jobsCollection.ReplaceOneAsync(j => j.Id == id, job);
+            await _jobsCollection.ReplaceOneAsync(j => j.JobID == id, job);
         }
 
         public async Task DeleteJobAsync(string id)
         {
-            await _jobsCollection.DeleteOneAsync(job => job.Id == id);
+            await _jobsCollection.DeleteOneAsync(job => job.JobID == id);
         }
     }
 }

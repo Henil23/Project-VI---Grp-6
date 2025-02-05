@@ -24,11 +24,11 @@ namespace JobApplicationPortal.Repo
             await _studentCollection.ReplaceOneAsync(s => s.StudentID == id, student);
         }
 
-        public async Task<bool>DeleteStudentAsync(string email, string password)
+        public async Task<DeleteResult> DeleteStudentAsync(string id)
         {
             // Delete the student by matching both email and password
-            var result = await _studentCollection.DeleteOneAsync(s => s.StudentEmail == email && s.StudentPassword == password);
-            return result.DeletedCount > 0;
+            var results = await _studentCollection.DeleteOneAsync(s => s.StudentID == id);
+            return results;
         }
 
     }

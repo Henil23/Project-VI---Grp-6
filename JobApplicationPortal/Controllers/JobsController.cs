@@ -1,65 +1,8 @@
-﻿//using JobApplicationPortal.Services;
-//using JobApplicationPortal.Models;
-//using Microsoft.AspNetCore.Mvc;
-
-//namespace JobApplicationPortal.Controllers
-//{
-//    public class JobsController : Controller
-//    {
-//        private readonly IJobService _jobService;
-
-//        public JobsController(IJobService jobService)
-//        {
-//            _jobService = jobService;
-//        }
-
-//        public async Task<IActionResult> Index()
-//        {
-//            var jobs = await _jobService.GetAllJobsAsync();
-
-//            if (jobs == null)
-//            {
-//                // Log or break here to check the issue
-//                Console.WriteLine("No jobs found.");
-//            }
-
-//            return View(jobs);
-//        }
-
-//        public async Task<IActionResult> Details(string id)
-//        {
-//            var job = await _jobService.GetJobByIdAsync(id);
-//            if (job == null) return NotFound();
-//            return View(job);
-//        }
-
-//        [HttpPost]
-//        public async Task<IActionResult> Create(Job job)
-//        {
-//            if (!ModelState.IsValid) return View(job);
-//            await _jobService.CreateJobAsync(job);
-//            return RedirectToAction(nameof(Index));
-//        }
-
-//        [HttpPost]
-//        public async Task<IActionResult> Edit(string id, Job job)
-//        {
-//            if (!ModelState.IsValid) return View(job);
-//            await _jobService.UpdateJobAsync(id, job);
-//            return RedirectToAction(nameof(Index));
-//        }
-
-//        [HttpPost]
-//        public async Task<IActionResult> Delete(string id)
-//        {
-//            await _jobService.DeleteJobAsync(id);
-//            return RedirectToAction(nameof(Index));
-//        }
-//    }
-//}
-using JobApplicationPortal.Models;
+﻿using JobApplicationPortal.Models;
 using JobApplicationPortal.Services;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Threading.Tasks;
 
 namespace JobApplicationPortal.Controllers
 {
@@ -72,22 +15,95 @@ namespace JobApplicationPortal.Controllers
             _jobService = jobService;
         }
 
-        // Fetch all jobs and pass to the view
+        // Fetch all jobs and pass them to JobListings view
         public async Task<IActionResult> Index()
         {
-            var jobs = await _jobService.GetAllJobsAsync(); // Fetch all jobs
-            return View(jobs); // Pass the jobs list to the view
+            var jobs = await _jobService.GetAllJobsAsync();
+
+            if (jobs == null || jobs.Count == 0)
+            {
+                Console.WriteLine("No jobs found.");
+            }
+
+            return View("~/Views/Home/JobListings.cshtml", jobs); // Explicitly set correct path
+        }
+
+        // Display Post Job form
+        public IActionResult PostJob()
+        {
+            return View();
+        }
+
+        // Handle Post Job submission
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> PostJob(Job job)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    await _jobService.CreateJobAsync(job);
+                    Console.WriteLine("Job successfully posted.");
+                    return RedirectToAction("Index"); // Redirect to JobListings
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error posting job: {ex.Message}");
+                    ModelState.AddModelError("", "An error occurred while posting the job.");
+                }
+            }
+            return View(job);
         }
 
         // Display job details
-        public async Task<IActionResult> Details(string id)
+        public async Task<IActionResult> Details(string jobID)
         {
-            var job = await _jobService.GetJobByIdAsync(id);
+            if (string.IsNullOrEmpty(jobID))
+            {
+                return BadRequest("Job ID is required.");
+            }
+
+            var job = await _jobService.GetJobByIdAsync(jobID);
             if (job == null)
             {
-                return NotFound(); // Handle missing job scenario
+                return NotFound();
             }
-            return View(job); // Pass the job to the Details view
+            return View(job);
+        }
+
+        // Handle Edit Job submission
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(string jobID, Job job)
+        {
+            if (string.IsNullOrEmpty(jobID) || jobID != job.JobID)
+            {
+                return BadRequest("Job ID mismatch.");
+            }
+
+            if (ModelState.IsValid)
+            {
+                await _jobService.UpdateJobAsync(jobID, job);
+                Console.WriteLine("Job successfully updated.");
+                return RedirectToAction("Index");
+            }
+            return View(job);
+        }
+
+        // Handle Delete Job
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(string jobID)
+        {
+            if (string.IsNullOrEmpty(jobID))
+            {
+                return BadRequest("Job ID is required.");
+            }
+
+            await _jobService.DeleteJobAsync(jobID);
+            Console.WriteLine("Job successfully deleted.");
+            return RedirectToAction("Index");
         }
     }
 }

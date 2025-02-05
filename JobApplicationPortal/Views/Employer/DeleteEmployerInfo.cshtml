@@ -1,0 +1,28 @@
+﻿@* @{ *@
+@*     Layout = "_Layout"; *@
+@* } *@
+
+@* <div class="signin-form-container"> *@
+@*     <div class="signin-form"> *@
+@*         <h1 class="form-title">Delete Account Confirmation</h1> *@
+@*         <form asp-action="DeleteStudent" asp-controller="Student" method="post"> *@
+@*             <div class="form-group"> *@
+@*                 <!-- Directly use the name attributes for email and password --> *@
+@*                 <input type="email" name="email" placeholder="Email" required /> *@
+@*             </div> *@
+@*             <div class="form-group"> *@
+@*                 <input type="password" name="password" placeholder="Password" required /> *@
+@*                 <span class="text-danger"></span> <!-- Optional: Add validation message here --> *@
+@*             </div> *@
+@*             <div class="form-group"> *@
+@*                 <button type="submit" class="submit-btn">Submit</button> *@
+@*             </div> *@
+@*             <div> *@
+@*                 @if (ViewBag.Message != null) *@
+@*                 { *@
+@*                     <p style="color: red;">@ViewBag.Message</p> *@
+@*                 } *@
+@*             </div> *@
+@*         </form> *@
+@*     </div> *@
+@* </div> *@

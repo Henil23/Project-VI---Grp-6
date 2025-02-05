@@ -22,6 +22,10 @@ namespace JobApplicationPortal.Controllers
         {
             return View();
         }
+        public IActionResult PostJob()
+        {
+            return View();
+        }
 
     }
 }

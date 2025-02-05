@@ -23,4 +23,7 @@ public class MongoDbContext
 
     //Collection for employer data
     public IMongoCollection<Student> Employer => _database.GetCollection<Student>("Employer");
+
+    //Collection for job data
+    public IMongoCollection<Job> Jobs => _database.GetCollection<Job>("Jobs");
 }

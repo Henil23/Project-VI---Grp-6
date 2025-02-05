@@ -1,5 +1,6 @@
-﻿using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
+﻿using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Bson;
+using System.ComponentModel.DataAnnotations;
 
 namespace JobApplicationPortal.Models
 {
@@ -7,21 +8,49 @@ namespace JobApplicationPortal.Models
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
-        public required string Id { get; set; }
+        //Job ID
+        public string? JobID { get; set; }
 
-        [BsonElement("Title")]
-        public string? Title { get; set; }
+      
+        // Job Title
+        [BsonElement("JobTitle")]
+        [Required(ErrorMessage = "Job Title is required .")]
+        public string? JobTitle { get; set; }
 
-        [BsonElement("Description")]
-        public string? Description { get; set; }
+        // Job Description
+        [BsonElement("JobDescription")]
+        [Required(ErrorMessage = "Job Description is required.")]
+        public string? JobDescription { get; set; }
+        
+        //Company Name
+        [BsonElement("CompanyName")]
+        [Required(ErrorMessage = "company name is required.")]
+       
+        public string? CompanyName { get; set; }
 
-        [BsonElement("Company")]
-        public string? Company { get; set; }
-
+       
+        // Location 
         [BsonElement("Location")]
+        [Required(ErrorMessage = "Location is required.")]
         public string? Location { get; set; }
 
-        [BsonElement("PostedDate")]
-        public DateTime PostedDate { get; set; }
+  
+
+        public bool IsSignedIn { get; set; }
+
+        // Parameterless constructor
+        public Job() { }
+
+        // Constructor
+        public Job(string id,string jobtitle, string jobdescription, string cname, string location)
+        {
+            JobID = id;
+            JobTitle = jobtitle;
+            JobDescription = jobdescription;
+            CompanyName = cname;
+            Location = location;
+        
+            IsSignedIn = false;
+        }
     }
 }

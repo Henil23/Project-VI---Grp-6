@@ -52,7 +52,7 @@ namespace JobApplicationPortal.Controllers
             HttpContext.Session.SetString("IsSignedIn", employer.IsSignedIn.ToString());
 
             // Redirect to success page or student dashboard
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("PostJob", "Home");
         }
 
         [HttpPost]

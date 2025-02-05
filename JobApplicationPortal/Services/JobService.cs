@@ -1,5 +1,7 @@
 ﻿using JobApplicationPortal.Models;
 using JobApplicationPortal.Repo;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace JobApplicationPortal.Services
 {
@@ -17,9 +19,9 @@ namespace JobApplicationPortal.Services
             return await _jobRepository.GetAllJobsAsync();
         }
 
-        public async Task<Job> GetJobByIdAsync(string id)
+        public async Task<Job> GetJobByIdAsync(string jobID)
         {
-            return await _jobRepository.GetJobByIdAsync(id);
+            return await _jobRepository.GetJobByIdAsync(jobID);
         }
 
         public async Task CreateJobAsync(Job job)
@@ -27,14 +29,14 @@ namespace JobApplicationPortal.Services
             await _jobRepository.AddJobAsync(job);
         }
 
-        public async Task UpdateJobAsync(string id, Job job)
+        public async Task UpdateJobAsync(string jobID, Job job)
         {
-            await _jobRepository.UpdateJobAsync(id, job);
+            await _jobRepository.UpdateJobAsync(jobID, job);
         }
 
-        public async Task DeleteJobAsync(string id)
+        public async Task DeleteJobAsync(string jobID)
         {
-            await _jobRepository.DeleteJobAsync(id);
+            await _jobRepository.DeleteJobAsync(jobID);
         }
     }
 }

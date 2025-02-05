@@ -23,7 +23,7 @@ namespace JobApplicationPortal.Controllers
             return View();
         }
 
-        [HttpGet]
+        [HttpGet()]
         public IActionResult DeleteStudentForm()
         {
             return View("DeleteStudentInfo");
@@ -50,41 +50,42 @@ namespace JobApplicationPortal.Controllers
             // Store data in session
             HttpContext.Session.SetString("FirstName", student.FirstName);
             HttpContext.Session.SetString("IsSignedIn", student.IsSignedIn.ToString());
+            HttpContext.Session.SetString("studentID", student.StudentID);
 
             // Redirect to success page or student dashboard
             return RedirectToAction("Index", "Home");
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteStudent(string email, string password)
+        [HttpDelete]
+        public async Task<IActionResult> DeleteStudent()
         {
-            if (ModelState.IsValid)
+            string? studentID = HttpContext.Session.GetString("studentID");
+
+            if (studentID != null)
             {
-                // Try to delete the student by email and password
-                var isDeleted = await _studentService.DeleteStudentAsync(email, password);
 
-                if (isDeleted)
+                var result = await _studentService.DeleteStudentAsync(studentID);
+
+                if (result == null)
                 {
-                    // If deletion was successful
-                    ViewBag.Message = "Student account has been deleted successfully.";
-                }
-                else
-                {
-                    // If student was not found or not deleted
-                    ViewBag.Message = "Error: No student found with the provided email and password.";
+                    return NotFound();
                 }
 
-                // Return the view with a message
-                return View("DeleteStudentInfo");
+                // removes all the student info
+                HttpContext.Session.Remove("studentID");
+                HttpContext.Session.Remove("FirstName");
+                HttpContext.Session.Remove("IsSignedIn");
+
+                // Redirect to homepage
+                return RedirectToAction("Index", "Home");
             }
+
             else
             {
-                // If the model is invalid
-                ViewBag.Message = "Error: Student information is incomplete or invalid.";
-                return View("DeleteStudentInfo");
+                return NotFound();
             }
         }
+
 
     }
 }
