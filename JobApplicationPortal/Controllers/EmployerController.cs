@@ -2,8 +2,6 @@
 using JobApplicationPortal.Models;
 using JobApplicationPortal.Services;
 using System.Threading.Tasks;
-using MongoDB.Bson;
-using JobApplicationPortal.Repo;
 
 namespace JobApplicationPortal.Controllers
 {
@@ -11,48 +9,92 @@ namespace JobApplicationPortal.Controllers
     {
         private readonly IEmployerService _employerService;
 
-        // Constructor injection for IStudentService
         public EmployerController(IEmployerService employerService)
         {
             _employerService = employerService;
         }
 
-        // GET: Show sign-in form
         public IActionResult SignIn()
         {
             return View();
         }
-
+        //NEEDS TO BE A DELETE REQUEST
         [HttpGet]
         public IActionResult DeleteEmployerForm()
         {
             return View("DeleteEmployerInfo");
         }
 
-        // POST: Handle student form submission
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SubmitEmployerForm(Employer employer)
         {
-            //student.StudentID = ObjectId.GenerateNewId().ToString();
-            // Model validation check
             if (!ModelState.IsValid)
             {
-                return View("SignIn", employer); // Return to form with validation errors
+                return View("SignIn", employer);
             }
 
-            // employer is signed in
             employer.IsSignedIn = true;
-
-            // Use the service to save the student data
             await _employerService.CreateEmployerAsync(employer);
 
-            // Store data in session
             HttpContext.Session.SetString("FirstName", employer.FirstName);
             HttpContext.Session.SetString("IsSignedIn", employer.IsSignedIn.ToString());
 
-            // Redirect to success page or student dashboard
-            return RedirectToAction("PostJob", "Home");
+            return View("~/Views/Home/PostJob.cshtml");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> EditEmployer(string email)
+        {
+            var employer = await _employerService.GetEmployerByEmailAsync(email);
+            if (employer == null)
+            {
+                return NotFound("Employer not found.");
+            }
+            return View("EditEmployer", employer);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateEmployer(Employer updatedEmployer)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View("EditEmployer", updatedEmployer);
+            }
+
+            var result = await _employerService.UpdateEmployerAsync(updatedEmployer.EmployerEmail, updatedEmployer);
+
+            if (result)
+            {
+                ViewBag.Message = "Employer information updated successfully.";
+                return RedirectToAction("PostJob", "Jobs");
+            }
+            else
+            {
+                ViewBag.Message = "Error updating employer information.";
+                return View("EditEmployer", updatedEmployer);
+            }
+        }
+
+        [HttpPatch]
+        public async Task<IActionResult> UpdateCompanyName(string email, string newCompanyName)
+        {
+            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(newCompanyName))
+            {
+                return BadRequest("Email and new company name are required.");
+            }
+
+            var result = await _employerService.UpdateEmployerFieldAsync(email, "CompanyName", newCompanyName);
+
+            if (result)
+            {
+                return Ok("Company name updated successfully.");
+            }
+            else
+            {
+                return NotFound("Employer not found or update failed.");
+            }
         }
 
         [HttpPost]
@@ -61,30 +103,24 @@ namespace JobApplicationPortal.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Try to delete the student by email and password
                 var isDeleted = await _employerService.DeleteEmployerAsync(email, password);
 
                 if (isDeleted)
                 {
-                    // If deletion was successful
                     ViewBag.Message = "Employer account has been deleted successfully.";
                 }
                 else
                 {
-                    // If student was not found or not deleted
                     ViewBag.Message = "Error: No employer found with the provided email and password.";
                 }
 
-                // Return the view with a message
                 return View("DeleteEmployerInfo");
             }
             else
             {
-                // If the model is invalid
                 ViewBag.Message = "Error: Employer information is incomplete or invalid.";
                 return View("DeleteEmployerInfo");
             }
         }
-
     }
 }

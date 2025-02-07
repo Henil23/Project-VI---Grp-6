@@ -53,7 +53,7 @@ namespace JobApplicationPortal.Controllers
             HttpContext.Session.SetString("studentID", student.StudentID);
 
             // Redirect to success page or student dashboard
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Jobs");
         }
 
         [HttpDelete]

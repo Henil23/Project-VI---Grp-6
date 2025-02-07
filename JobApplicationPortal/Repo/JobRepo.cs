@@ -1,5 +1,7 @@
 ﻿using JobApplicationPortal.Models;
 using MongoDB.Driver;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace JobApplicationPortal.Repo
 {
@@ -14,7 +16,7 @@ namespace JobApplicationPortal.Repo
 
         public async Task<List<Job>> GetAllJobsAsync()
         {
-            return await _jobsCollection.Find(_ => true).ToListAsync();
+            return await _jobsCollection.Find(_ => true).ToListAsync();  // Fetch all jobs
         }
 
         public async Task<Job> GetJobByIdAsync(string id)
@@ -24,7 +26,7 @@ namespace JobApplicationPortal.Repo
 
         public async Task AddJobAsync(Job job)
         {
-            await _jobsCollection.InsertOneAsync(job);
+            await _jobsCollection.InsertOneAsync(job);  // Save job to MongoDB
         }
 
         public async Task UpdateJobAsync(string id, Job job)

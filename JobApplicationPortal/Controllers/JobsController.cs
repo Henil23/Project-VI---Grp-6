@@ -18,15 +18,16 @@ namespace JobApplicationPortal.Controllers
         // Fetch all jobs and pass them to JobListings view
         public async Task<IActionResult> Index()
         {
-            var jobs = await _jobService.GetAllJobsAsync();
+            var jobs = await _jobService.GetAllJobsAsync();  // Fetch jobs from DB
 
             if (jobs == null || jobs.Count == 0)
             {
                 Console.WriteLine("No jobs found.");
             }
 
-            return View("~/Views/Home/JobListings.cshtml", jobs); // Explicitly set correct path
+            return View("~/Views/Home/JobListings.cshtml", jobs);  // Pass jobs to the view
         }
+
 
         // Display Post Job form
         public IActionResult PostJob()
@@ -43,9 +44,11 @@ namespace JobApplicationPortal.Controllers
             {
                 try
                 {
-                    await _jobService.CreateJobAsync(job);
+                    await _jobService.CreateJobAsync(job);  // Ensure this adds to MongoDB
                     Console.WriteLine("Job successfully posted.");
-                    return RedirectToAction("Index"); // Redirect to JobListings
+
+                    // Redirect to the JobListings page after posting
+                    return RedirectToAction("Index");  // Index will load JobListings.cshtml
                 }
                 catch (Exception ex)
                 {
@@ -55,6 +58,7 @@ namespace JobApplicationPortal.Controllers
             }
             return View(job);
         }
+
 
         // Display job details
         public async Task<IActionResult> Details(string jobID)

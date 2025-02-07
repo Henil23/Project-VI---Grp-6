@@ -1,5 +1,4 @@
-﻿using Amazon.Runtime.Internal.Auth;
-using JobApplicationPortal.Models;
+﻿using JobApplicationPortal.Models;
 using JobApplicationPortal.Repo;
 
 namespace JobApplicationPortal.Services
@@ -18,11 +17,24 @@ namespace JobApplicationPortal.Services
             await _employerRepository.AddEmployerAsync(employer);
         }
 
-        public async Task UpdateEmployerAsync(string id, Employer employer)
+        public async Task<bool> UpdateEmployerAsync(string email, Employer updatedEmployer)
         {
-            await _employerRepository.UpdateEmployerAsync(id, employer);
+            return await _employerRepository.UpdateEmployerAsync(email, updatedEmployer);
         }
 
-        public async Task<bool> DeleteEmployerAsync(string email, string password) => await _employerRepository.DeleteEmployerAsync(email, password);
+        public async Task<bool> UpdateEmployerFieldAsync(string email, string fieldName, string newValue)
+        {
+            return await _employerRepository.UpdateEmployerFieldAsync(email, fieldName, newValue);
+        }
+
+        public async Task<Employer> GetEmployerByEmailAsync(string email)
+        {
+            return await _employerRepository.GetEmployerByEmailAsync(email);
+        }
+
+        public async Task<bool> DeleteEmployerAsync(string email, string password)
+        {
+            return await _employerRepository.DeleteEmployerAsync(email, password);
+        }
     }
 }
