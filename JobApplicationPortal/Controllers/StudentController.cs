@@ -95,6 +95,7 @@ namespace JobApplicationPortal.Controllers
             return RedirectToAction("Index", "Home");
         }
 
+        // PUT: Modify/Update the Entire Student's Details
         [HttpPut]
         public async Task<IActionResult> UpdateStudent([FromBody] Student student)
         {
