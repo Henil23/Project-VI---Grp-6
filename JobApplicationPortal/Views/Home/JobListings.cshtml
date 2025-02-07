@@ -1,39 +1,4 @@
-﻿@* @model List<Job> *@
-
-@* @{ *@
-@*     Layout = "_Layout"; *@
-@*     ViewData["Title"] = "Browse Job Listings"; *@
-@* } *@
-
-@* <div class="job-listings-container"> *@
-@*     <h1>@ViewData["Title"]</h1> *@
-@*     <div class="search-bar"> *@
-@*         <input type="text" placeholder="Job Title or Keywords" class="search-input" /> *@
-@*         <input type="text" placeholder="Location" class="search-input" /> *@
-@*         <button class="search-btn">Search</button> *@
-@*     </div> *@
-
-@*     <div class="job-listings"> *@
-@*         @if (Model != null && Model.Any()) *@
-@*         { *@
-@*             @foreach (var job in Model) *@
-@*             { *@
-@*                 <div class="job-card"> *@
-@*                     <h3>@job.JobTitle</h3> *@
-@*                     <p>Company: @job.CompanyName</p> *@
-@*                     <p>Location: @job.Location</p> *@
-@*                     <p>Description: @job.JobDescription</p> *@
-@*                     <button class="view-btn">View Details</button> *@
-@*                     <button class="apply-btn">Apply</button> *@
-@*                 </div> *@
-@*             } *@
-@*         } *@
-@*         else *@
-@*         { *@
-@*             <p>No job listings available.</p> *@
-@*         } *@
-@*     </div> *@
-@* </div> *@
+﻿
 @model List<Job>
 
 @{
@@ -60,7 +25,7 @@
                     <p><strong>Company:</strong> @job.CompanyName</p>
                     <p><strong>Location:</strong> @job.Location</p>
                     <p><strong>Description:</strong> @job.JobDescription</p>
-                    <button class="view-btn">View Details</button>
+                
                     <button class="apply-btn">Apply</button>
                 </div>
             }
