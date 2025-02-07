@@ -125,6 +125,12 @@ namespace JobApplicationPortal.Controllers
             }
         }
 
+        public IActionResult GetOptions()
+        {
+            Response.Headers.Add("Allow", "GET, POST, PATCH, DELETE, OPTIONS");
+            return Ok();
+        }
+
 
     }
 }

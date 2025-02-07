@@ -16,6 +16,13 @@ namespace JobApplicationPortal.Controllers
             return View();
         }
 
+        [HttpOptions]
+        public IActionResult GetOptions()
+        {
+            Response.Headers.Add("Allow", "GET, POST, OPTIONS");
+            return Ok();
+        }
+
         [HttpPost]
         public async Task<IActionResult> EmployerSignUp(Employer e)
         {

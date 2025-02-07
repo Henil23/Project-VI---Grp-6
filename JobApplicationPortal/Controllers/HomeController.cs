@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using JobApplicationPortal.Models;
+using JobApplicationPortal.Services;
 
 namespace JobApplicationPortal.Controllers
 {
@@ -35,6 +36,14 @@ namespace JobApplicationPortal.Controllers
             // Redirect to the job listing page after submission
             TempData["Message"] = "Thank you for contacting us! We will get back to you soon.";
             return RedirectToAction("JobListings", "Home"); // Redirect to the JobListing page
+        }
+
+
+        [HttpOptions]
+        public IActionResult GetOptions()
+        {
+            Response.Headers.Add("Allow", "GET, POST, OPTIONS");
+            return Ok();
         }
     }
 }

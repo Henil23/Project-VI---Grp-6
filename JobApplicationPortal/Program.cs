@@ -34,6 +34,7 @@
 
 using JobApplicationPortal.Repo;
 using JobApplicationPortal.Services;
+using Microsoft.AspNetCore.HttpOverrides;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -41,34 +42,56 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSingleton<MongoDbContext>();
 builder.Services.AddScoped<JobRepo>();
 builder.Services.AddScoped<StudentRepo>();
+builder.Services.AddScoped<EmployRepo>();
 builder.Services.AddScoped<IJobService, JobService>();
 builder.Services.AddScoped<IStudentService, StudentService>();
+builder.Services.AddScoped<IEmployerService, EmployerService>();
 
 builder.Services.AddControllersWithViews();
+builder.Services.AddControllers().AddNewtonsoftJson();
 
-builder.Services.AddControllers().AddNewtonsoftJson(); // json formatting functionality
+// Enable CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+        policy => policy.AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader());
+});
 
-// transfer data over memory cache with a time limit
+// Configure session state
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromMinutes(30); // Set session timeout
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
     options.Cookie.HttpOnly = true;
-    options.Cookie.IsEssential = true; // Necessary for GDPR compliance
+    options.Cookie.IsEssential = true;
 });
 
 var app = builder.Build();
 
-// Middleware pipeline configuration
-app.UseStaticFiles(); // Serve static files like CSS, JS, etc.
-
+app.UseStaticFiles();
 app.UseRouting();
-
-// uses the implemented session state
 app.UseSession();
+app.UseCors("AllowAll");
+
+// Middleware to handle OPTIONS requests globally
+app.Use(async (context, next) =>
+{
+    if (context.Request.Method == HttpMethods.Options)
+    {
+        context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
+        context.Response.Headers.Add("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS");
+        context.Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Authorization");
+        context.Response.StatusCode = StatusCodes.Status204NoContent;
+        return;
+    }
+    await next();
+});
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}"); // Default route
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
+

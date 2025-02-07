@@ -89,5 +89,11 @@ namespace JobApplicationPortal.Controllers
             }
             return View(job); // Pass the job to the Details view
         }
+
+        public IActionResult GetOptions()
+        {
+            Response.Headers.Add("Allow", "GET, OPTIONS");
+            return Ok();
+        }
     }
 }
