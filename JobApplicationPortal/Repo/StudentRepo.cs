@@ -13,11 +13,6 @@ namespace JobApplicationPortal.Repo
             _studentCollection = context.GetCollection<Student>("Students");
         }
 
-        public async Task<Student> GetStudentByIdAsync(string id)
-        {
-            return await _studentCollection.Find(s => s.StudentID == id).FirstOrDefaultAsync();
-        }
-
         public async Task AddStudentAsync(Student student)
         {
             await _studentCollection.InsertOneAsync(student);

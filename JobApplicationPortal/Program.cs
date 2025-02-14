@@ -46,8 +46,6 @@ builder.Services.AddScoped<IStudentService, StudentService>();
 
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddControllers().AddNewtonsoftJson(); // json formatting functionality
-
 // transfer data over memory cache with a time limit
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>

@@ -14,11 +14,6 @@ namespace JobApplicationPortal.Services
             _studentRepository = studentRepository;
         }
 
-        public async Task<Student> GetStudentByIdAsync(string id)
-        {
-            return await _studentRepository.GetStudentByIdAsync(id);
-        }
-
         public async Task CreateStudentAsync(Student student)
         {
             await _studentRepository.AddStudentAsync(student);

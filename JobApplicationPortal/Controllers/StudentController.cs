@@ -4,7 +4,6 @@ using JobApplicationPortal.Services;
 using System.Threading.Tasks;
 using MongoDB.Bson;
 using JobApplicationPortal.Repo;
-using Microsoft.AspNetCore.JsonPatch;
 
 namespace JobApplicationPortal.Controllers
 {
@@ -23,44 +22,6 @@ namespace JobApplicationPortal.Controllers
         {
             return View();
         }
-
-        public IActionResult UpdateStudent()
-        {
-            return View();
-        }
-
-        [HttpPatch]
-        public async Task<IActionResult> UpdateStudent([FromBody] JsonPatchDocument<Student> studentPatch)
-        {
-            // checks if PATCH request is empty
-            if (studentPatch == null)
-            {
-                return BadRequest();
-            }
-
-            string? studentId = HttpContext.Session.GetString("studentID");
-            Student? currentStudent = await _studentService.GetStudentByIdAsync(studentId);
-
-            // unable to find or student is not registered
-            if (currentStudent == null)
-            {
-                TempData["ErrorMessage"] = "You are not logged in";
-                return BadRequest(new { message = "You are not logged in" });
-            }
-
-            // applying json format to model state
-            studentPatch.ApplyTo(currentStudent, ModelState);
-
-            // validating inputs ensures that all inputs are filled
-            if (!TryValidateModel(currentStudent))
-            {
-                return BadRequest(ModelState);
-            }
-
-            await _studentService.UpdateStudentAsync(studentId, currentStudent);
-            return Ok(currentStudent);
-        }
-
 
         [HttpGet()]
         public IActionResult DeleteStudentForm()
