@@ -1,32 +1,40 @@
 ﻿using JobApplicationPortal.Models;
 using JobApplicationPortal.Repo;
-using MongoDB.Driver;
 
 namespace JobApplicationPortal.Services
 {
     public class EmployerService : IEmployerService
     {
-        private readonly EmployRepo _employerRepository;
+        private readonly EmployerRepo _employerRepository;
 
-        public EmployerService(EmployRepo employerRepository)
+        public EmployerService(EmployerRepo employerRepository)
         {
             _employerRepository = employerRepository;
         }
 
-        public async Task AddEmployerAsync(Employer employer)
+        public async Task CreateEmployerAsync(Employer employer)
         {
             await _employerRepository.AddEmployerAsync(employer);
         }
 
-        public async Task UpdateEmployerAsync(string id, Employer employer)
+        public async Task<bool> UpdateEmployerAsync(string email, Employer updatedEmployer)
         {
-            await _employerRepository.UpdateEmployerAsync(id, employer);
+            return await _employerRepository.UpdateEmployerAsync(email, updatedEmployer);
         }
 
-        public async Task<DeleteResult> DeleteEmployerAsync(string id)
+        public async Task<bool> UpdateEmployerFieldAsync(string email, string fieldName, string newValue)
         {
-            var result = await _employerRepository.DeleteEmployerAsync(id);
-            return result;
+            return await _employerRepository.UpdateEmployerFieldAsync(email, fieldName, newValue);
+        }
+
+        public async Task<Employer> GetEmployerByEmailAsync(string email)
+        {
+            return await _employerRepository.GetEmployerByEmailAsync(email);
+        }
+
+        public async Task<bool> DeleteEmployerAsync(string email, string password)
+        {
+            return await _employerRepository.DeleteEmployerAsync(email, password);
         }
     }
 }

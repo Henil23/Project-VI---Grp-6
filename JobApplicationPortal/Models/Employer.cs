@@ -1,5 +1,6 @@
-﻿using MongoDB.Bson;
+﻿
 using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Bson;
 using System.ComponentModel.DataAnnotations;
 
 namespace JobApplicationPortal.Models
@@ -10,20 +11,50 @@ namespace JobApplicationPortal.Models
         [BsonRepresentation(BsonType.ObjectId)]
         public string? EmployerID { get; set; }
 
+        [BsonElement("EmployerPassword")]
+        [Required(ErrorMessage = "Password is required.")]
+        [StringLength(32, MinimumLength = 6, ErrorMessage = "Password must be between 6 and 32 characters long.")]
+        public string? EmployerPassword { get; set; }
+
+        [BsonElement("EmployerFirstName")]
+        [Required(ErrorMessage = "First name is required.")]
+        public string? FirstName { get; set; }
+
+        [BsonElement("EmployerLastName")]
+        [Required(ErrorMessage = "Last name is required.")]
+        public string? LastName { get; set; }
+
+        [BsonElement("EmployerEmail")]
+        [Required(ErrorMessage = "Email is required.")]
+        [EmailAddress(ErrorMessage = "Invalid email format.")]
+        public string? EmployerEmail { get; set; }
+
         [BsonElement("CompanyName")]
-        [Required]
-        [StringLength(100, MinimumLength = 1, ErrorMessage = "Company Name must be between 1 and 100 characters.")]
+        [Required(ErrorMessage = "Company Name is required.")]
         public string? CompanyName { get; set; }
 
-        [BsonElement("email")]
-        [Required]
-        [EmailAddress]
-        public string? EmployerEmail {  get; set; }
+        public bool IsSignedIn { get; set; }
 
-        [BsonElement("password")]
-        [Required]
-        [StringLength(int.MaxValue, MinimumLength = 6, ErrorMessage = "The {0} must be at least {2} characters long.")]
-        [RegularExpression(@"^((?=.*[a-z])(?=.*[A-Z])(?=.*\d)).+$")] // password validation
-        public string? EmployerPassword { get; set; }
+        // List of jobs associated with the employer
+        public List<Job>? PostedJobs { get; set; }
+
+        // Parameterless constructor
+        public Employer()
+        {
+            PostedJobs = new List<Job>();
+        }
+
+        // Constructor with parameters
+        public Employer(string id, string password, string firstName, string lastName, string email, string companyName, bool isSignedIn)
+        {
+            EmployerID = id;
+            EmployerPassword = password;
+            FirstName = firstName;
+            LastName = lastName;
+            EmployerEmail = email;
+            CompanyName = companyName;
+            IsSignedIn = isSignedIn;
+            PostedJobs = new List<Job>();
+        }
     }
 }

@@ -6,17 +6,78 @@
     ViewData["Title"] = "Welcome to Our Job Portal";
 }
 
-<div class="home-container">
+<div class="center-container">
     <h1>@ViewData["Title"]</h1>
-    <p>Welcome to the job portal for students. See all the co-op/internships that are available.
-       Here are all the options this site offers:</p>
-    <ul>
-        <li><a href="/Home/JobListings">Browse job listings</a></li>
-        <li>Upload your resume</li>
-        <li>Contact the employers</li>
-    </ul>
+    <p>Please choose your role:</p>
 
+    <div class="role-selection">
+        <button class="role-btn" onclick="roleSelected('Student')">Student</button>
+        <button class="role-btn" onclick="roleSelected('Employer')">Employer</button>
+    </div>
+
+    <div id="roleContent">
+        <!-- Content based on selection will appear here -->
+    </div>
 </div>
-<div class="homepage-image">
-    <img src="/static/student_collab_main.jpg" alt="student_group_work" />
-</div>
+
+<script>
+    function roleSelected(role) {
+        var roleContent = document.getElementById('roleContent');
+
+        if (role === 'Student') {
+            roleContent.innerHTML = `
+                <span>Welcome, Student!</span><br>
+                <a href="@Url.Action("SignIn", "Student")">Go to Student Portal</a>
+            `;
+        } else if (role === 'Employer') {
+            roleContent.innerHTML = `
+                <span>Welcome, Employer!</span><br>
+                <a href="@Url.Action("SignIn", "Employer")">Go to Employer Portal</a>
+            `;
+        }
+    }
+</script>
+
+<style>
+    /* Center the content */
+    .center-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        text-align: center;
+    }
+
+    /* Role selection buttons styling */
+    .role-selection {
+        margin-top: 20px;
+    }
+
+    .role-btn {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 18px 35px; /* Increased padding for larger buttons */
+        margin: 15px; /* Slightly increased margin for spacing */
+        font-size: 24px; /* Larger font size */
+        cursor: pointer;
+        border-radius: 12px; /* Slightly larger border radius for a rounder button */
+        transition: background-color 0.3s, transform 0.2s;
+    }
+
+
+        .role-btn:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        .role-btn:active {
+            transform: translateY(0);
+        }
+
+    /* Content display */
+    #roleContent {
+        margin-top: 20px;
+    }
+</style>

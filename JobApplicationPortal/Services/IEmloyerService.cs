@@ -1,12 +1,13 @@
 ﻿using JobApplicationPortal.Models;
-using MongoDB.Driver;
 
 namespace JobApplicationPortal.Services
 {
     public interface IEmployerService
     {
-        public Task AddEmployerAsync(Employer employer);
-        public Task UpdateEmployerAsync(string id, Employer employer);
-        public Task<DeleteResult> DeleteEmployerAsync(string id);
+        Task CreateEmployerAsync(Employer employer);
+        Task<bool> UpdateEmployerAsync(string email, Employer updatedEmployer);
+        Task<bool> UpdateEmployerFieldAsync(string email, string fieldName, string newValue);
+        Task<Employer> GetEmployerByEmailAsync(string email);
+        Task<bool> DeleteEmployerAsync(string email, string password);
     }
 }

@@ -95,6 +95,40 @@ namespace JobApplicationPortal.Controllers
             return RedirectToAction("Index", "Home");
         }
 
+        // PUT: Modify/Update the Entire Student's Details
+        [HttpPut]
+        public async Task<IActionResult> UpdateStudent([FromBody] Student student)
+        {
+            if (student == null || string.IsNullOrEmpty(student.StudentID))
+            {
+                return BadRequest("Invalid student data.");
+            }
+
+            string? studentId = HttpContext.Session.GetString("studentID");
+            if (studentId == null || studentId != student.StudentID)
+            {
+                return Unauthorized("You are not authorized to update this student.");
+            }
+
+            Student? existingStudent = await _studentService.GetStudentByIdAsync(studentId);
+            if (existingStudent == null)
+            {
+                return NotFound("Student not found.");
+            }
+
+            existingStudent.FirstName = student.FirstName ?? existingStudent.FirstName;
+            existingStudent.LastName = student.LastName ?? existingStudent.LastName;
+            existingStudent.StudentEmail = student.StudentEmail ?? existingStudent.StudentEmail;
+            existingStudent.StudentDOB = student.StudentDOB ?? existingStudent.StudentDOB;
+            existingStudent.StudentAddress = student.StudentAddress ?? existingStudent.StudentAddress;
+            existingStudent.StudentCity = student.StudentCity ?? existingStudent.StudentCity;
+            existingStudent.StudentCountry = student.StudentCountry ?? existingStudent.StudentCountry;
+            existingStudent.School = student.School ?? existingStudent.School;
+
+            await _studentService.UpdateStudentAsync(studentId, existingStudent);
+            return Ok(existingStudent);
+        }
+
         [HttpDelete]
         public async Task<IActionResult> DeleteStudent()
         {
@@ -111,7 +145,7 @@ namespace JobApplicationPortal.Controllers
                 }
 
                 // removes all the student info
-                HttpContext.Session.Remove("studentID"); 
+                HttpContext.Session.Remove("studentID");
                 HttpContext.Session.Remove("FirstName");
                 HttpContext.Session.Remove("IsSignedIn");
 
@@ -123,6 +157,14 @@ namespace JobApplicationPortal.Controllers
             {
                 return NotFound();
             }
+        }
+
+        //option method implemented
+        [HttpOptions]
+        public IActionResult GetOptions()
+        {
+            Response.Headers.Add("Allow", "GET, POST, OPTIONS");
+            return Ok();
         }
 
 

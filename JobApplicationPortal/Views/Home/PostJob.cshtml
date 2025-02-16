@@ -1,0 +1,124 @@
+﻿@model Job
+@Html.AntiForgeryToken()
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post a Job</title>
+    <style>
+        /* Global Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f7f7f7;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Container */
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+            text-align: left;
+        }
+
+        /* Title */
+        h2 {
+            margin-bottom: 25px;
+            color: #444;
+            font-size: 24px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        /* Form Styles */
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            color: #555;
+            background-color: #f9f9f9;
+            box-sizing: border-box;
+            transition: all 0.3s ease-in-out;
+        }
+
+            input:focus, textarea:focus {
+                border-color: #007bff;
+                background-color: #fff;
+                outline: none;
+            }
+
+        /* Button Styles */
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #007bff;
+            border: none;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.2s ease;
+            box-sizing: border-box;
+        }
+
+            button:hover {
+                background: #0056b3;
+                transform: translateY(-2px);
+            }
+
+            button:active {
+                transform: translateY(0);
+            }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Post a New Job</h2>
+        <form asp-action="PostJob" asp-controller="Jobs" method="post">
+            @Html.AntiForgeryToken()
+
+            <label for="JobTitle">Job Title</label>
+            <input type="text" id="JobTitle" asp-for="JobTitle" placeholder="Enter job title" required>
+            <span class="text-danger">@Html.ValidationMessageFor(model => model.JobTitle)</span>
+
+            <label for="JobDescription">Job Description</label>
+            <textarea id="JobDescription" asp-for="JobDescription" placeholder="Enter job details" required></textarea>
+            <span class="text-danger">@Html.ValidationMessageFor(model => model.JobDescription)</span>
+
+            <label for="CompanyName">Company Name</label>
+            <input type="text" id="CompanyName" asp-for="CompanyName" placeholder="Enter company name" required>
+            <span class="text-danger">@Html.ValidationMessageFor(model => model.CompanyName)</span>
+
+            <label for="Location">Location</label>
+            <input type="text" id="Location" asp-for="Location" placeholder="Enter job location" required>
+            <span class="text-danger">@Html.ValidationMessageFor(model => model.Location)</span>
+
+            <button type="submit">Post Job</button>
+        </form>
+    </div>
+</body>
+</html>

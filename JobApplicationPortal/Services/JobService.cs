@@ -1,5 +1,7 @@
 ﻿using JobApplicationPortal.Models;
 using JobApplicationPortal.Repo;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace JobApplicationPortal.Services
 {
@@ -24,7 +26,7 @@ namespace JobApplicationPortal.Services
 
         public async Task CreateJobAsync(Job job)
         {
-            await _jobRepository.AddJobAsync(job);
+            await _jobRepository.AddJobAsync(job);  // Ensure job is added to MongoDB
         }
 
         public async Task UpdateJobAsync(string id, Job job)

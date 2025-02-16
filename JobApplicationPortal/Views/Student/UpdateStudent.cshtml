@@ -53,6 +53,7 @@
 </div>
 
 <script>
+    // PUT: Modify the entire student's detail
     document.getElementById("updateStudentForm").addEventListener("submit", async function(event) {
         event.preventDefault(); // Prevent the form from submitting the normal way
 
@@ -64,8 +65,8 @@
             studentData[key] = value;
         });
 
-        // Prepare the JSON Patch document
-        const patchDocument = [
+        // Prepare the JSON PUT document
+        const putDocument = [
             { "op": "replace", "path": "/FirstName", "value": studentData.FirstName },
             { "op": "replace", "path": "/LastName", "value": studentData.LastName },
             { "op": "replace", "path": "/StudentEmail", "value": studentData.StudentEmail },
@@ -80,9 +81,9 @@
         // Get the CSRF token using vanilla JavaScript
         const csrfToken = document.querySelector('input[name="__RequestVerificationToken"]').value;
 
-        // Send the PATCH request
+        // Send the PUT request
         const response = await fetch('@Url.Action("UpdateStudent", "Student")', {
-            method: 'PATCH',
+            method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
                 'RequestVerificationToken': csrfToken // Add CSRF token
@@ -99,5 +100,40 @@
             // Handle errors
             alert('Error updating student: ' + result.errors);
         }
+    });
+
+    // PATCH: Modifies details those selected by the student, the rest will stay unchanged.
+    document.getElementById("updateSpecificFields").addEventListener("click", async function() {
+        const formData = new FormData(document.getElementById("updateStudentForm"));
+        const patchDocument = [];
+
+        formData.forEach((value, key) => {
+            if (value.trim() !== "")
+                patchDocument.push({ "op": "replace", "path": `/${key}`, "value": value });
+        });
+
+        if (patchDocument.length === 0) {
+            alert("No fields provided to update.");
+            return;
+        }
+
+        const csrfToken = document.querySelector('input[name="__RequestVerificationToken"]').value;
+
+        const response = await fetch('@Url.Action("UpdateStudent", "Student")', {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'RequestVerificationToken': csrfToken
+            },
+            body: JSON.stringify(patchDocument)
+        });
+
+        const result = await response.json();
+
+        if (response.ok)
+            alert("Selected fields updated successfully");
+        else
+            alert("Error updating student: " + result.errors);
+
     });
 </script>
