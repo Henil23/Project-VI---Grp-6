@@ -66,17 +66,17 @@
         });
 
         // Prepare the JSON PUT document
-        const putDocument = [
-            { "op": "replace", "path": "/FirstName", "value": studentData.FirstName },
-            { "op": "replace", "path": "/LastName", "value": studentData.LastName },
-            { "op": "replace", "path": "/StudentEmail", "value": studentData.StudentEmail },
-            { "op": "replace", "path": "/StudentDOB", "value": studentData.StudentDOB },
-            { "op": "replace", "path": "/StudentAddress", "value": studentData.StudentAddress },
-            { "op": "replace", "path": "/StudentCity", "value": studentData.StudentCity },
-            { "op": "replace", "path": "/StudentCountry", "value": studentData.StudentCountry },
-            { "op": "replace", "path": "/School", "value": studentData.School },
-            { "op": "replace", "path": "/StudentPassword", "value": studentData.StudentPassword }
-        ];
+        // const putDocument = [
+        //     { "op": "replace", "path": "/FirstName", "value": studentData.FirstName },
+        //     { "op": "replace", "path": "/LastName", "value": studentData.LastName },
+        //     { "op": "replace", "path": "/StudentEmail", "value": studentData.StudentEmail },
+        //     { "op": "replace", "path": "/StudentDOB", "value": studentData.StudentDOB },
+        //     { "op": "replace", "path": "/StudentAddress", "value": studentData.StudentAddress },
+        //     { "op": "replace", "path": "/StudentCity", "value": studentData.StudentCity },
+        //     { "op": "replace", "path": "/StudentCountry", "value": studentData.StudentCountry },
+        //     { "op": "replace", "path": "/School", "value": studentData.School },
+        //     { "op": "replace", "path": "/StudentPassword", "value": studentData.StudentPassword }
+        // ];
 
         // Get the CSRF token using vanilla JavaScript
         const csrfToken = document.querySelector('input[name="__RequestVerificationToken"]').value;
@@ -88,7 +88,7 @@
                 'Content-Type': 'application/json',
                 'RequestVerificationToken': csrfToken // Add CSRF token
             },
-            body: JSON.stringify(patchDocument)
+            body: JSON.stringify(studentData)   // Sends the full student object (previously putDocument)
         });
 
         const result = await response.json();
@@ -107,6 +107,14 @@
         const formData = new FormData(document.getElementById("updateStudentForm"));
         const patchDocument = [];
 
+        // Extracts Student ID
+        const studentId = document.getElementById("StudentId").value; // Ensure this ID exists in your form
+
+        if (!studentId) {
+            alert("Error: Student ID is missing.");
+            return;
+        }
+
         formData.forEach((value, key) => {
             if (value.trim() !== "")
                 patchDocument.push({ "op": "replace", "path": `/${key}`, "value": value });
@@ -119,7 +127,10 @@
 
         const csrfToken = document.querySelector('input[name="__RequestVerificationToken"]').value;
 
-        const response = await fetch('@Url.Action("UpdateStudent", "Student")', {
+        const baseUrl = '@Url.Action("UpdateStudent", "Student")';
+        const requestUrl = `${baseUrl}/${studentId}`;
+
+        const response = await fetch(requestUrl, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',

@@ -116,17 +116,16 @@ namespace JobApplicationPortal.Controllers
                 return NotFound("Student not found.");
             }
 
-            existingStudent.FirstName = student.FirstName ?? existingStudent.FirstName;
-            existingStudent.LastName = student.LastName ?? existingStudent.LastName;
-            existingStudent.StudentEmail = student.StudentEmail ?? existingStudent.StudentEmail;
-            existingStudent.StudentDOB = student.StudentDOB ?? existingStudent.StudentDOB;
-            existingStudent.StudentAddress = student.StudentAddress ?? existingStudent.StudentAddress;
-            existingStudent.StudentCity = student.StudentCity ?? existingStudent.StudentCity;
-            existingStudent.StudentCountry = student.StudentCountry ?? existingStudent.StudentCountry;
-            existingStudent.School = student.School ?? existingStudent.School;
+            // Validate that all required fields are present
+            if (!TryValidateModel(student))
+            {
+                return BadRequest(ModelState);
+            }
 
-            await _studentService.UpdateStudentAsync(studentId, existingStudent);
-            return Ok(existingStudent);
+            // Fully replace the student data
+            await _studentService.UpdateStudentAsync(studentId, student);
+            
+            return Ok(student);
         }
 
         [HttpDelete]
