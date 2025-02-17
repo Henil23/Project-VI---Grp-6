@@ -1,4 +1,4 @@
-//using Microsoft.AspNetCore.Builder;
+﻿//using Microsoft.AspNetCore.Builder;
 //using Microsoft.Extensions.DependencyInjection;
 //using Microsoft.Extensions.Hosting;
 
@@ -80,6 +80,13 @@ app.Use(async (context, next) =>
 {
     if (context.Request.Method == HttpMethods.Options)
     {
+        var endpoint = context.GetEndpoint();
+        if (endpoint == null)
+        {
+            context.Response.StatusCode = StatusCodes.Status404NotFound;
+            return;
+        }
+
         context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
         context.Response.Headers.Add("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS");
         context.Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Authorization");
@@ -88,6 +95,7 @@ app.Use(async (context, next) =>
     }
     await next();
 });
+
 
 app.MapControllerRoute(
     name: "default",

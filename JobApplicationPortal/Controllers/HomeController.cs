@@ -38,12 +38,6 @@ namespace JobApplicationPortal.Controllers
             return RedirectToAction("JobListings", "Home"); // Redirect to the JobListing page
         }
 
-
-        [HttpOptions]
-        public IActionResult GetOptions()
-        {
-            Response.Headers.Add("Allow", "GET, POST, OPTIONS");
-            return Ok();
-        }
+      
     }
 }
