@@ -24,6 +24,11 @@ namespace JobApplicationPortal.Controllers
         {
             return View("DeleteEmployerInfo");
         }
+        [HttpGet]
+        public IActionResult SubmitEmployerForm()
+        {
+            return View ("SubmitEmployerForm");
+        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
