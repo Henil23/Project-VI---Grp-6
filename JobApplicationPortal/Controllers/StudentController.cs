@@ -21,6 +21,7 @@ namespace JobApplicationPortal.Controllers
         // GET: Show sign-in form
         public IActionResult SignIn()
         {
+            ViewBag.SignedIn = HttpContext.Session.GetString("IsSignedIn");
             return View();
         }
 
@@ -73,7 +74,6 @@ namespace JobApplicationPortal.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SubmitStudentForm(Student student)
         {
-            //student.StudentID = ObjectId.GenerateNewId().ToString();
             // Model validation check
             if (!ModelState.IsValid)
             {

@@ -37,6 +37,9 @@ using JobApplicationPortal.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// running on the broadcast channel for testing
+builder.WebHost.UseUrls("http://0.0.0.0:5212");
+
 // Add services to the container
 builder.Services.AddSingleton<MongoDbContext>();
 builder.Services.AddScoped<JobRepo>();
