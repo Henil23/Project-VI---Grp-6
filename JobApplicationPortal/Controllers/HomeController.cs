@@ -30,6 +30,27 @@ namespace JobApplicationPortal.Controllers
         {
             return View();
         }
+
+        [HttpPost]
+        public IActionResult SubmitContactForm(string name, string email, string message)
+        {
+            if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(email) || string.IsNullOrEmpty(message))
+            {
+                TempData["ErrorMessage"] = "All fields are required.";
+                return RedirectToAction("ContactUs"); // Reloads form with error message
+            }
+
+            // Simulate storing the message or sending an email
+            Console.WriteLine($"Contact request from {name} ({email}): {message}");
+
+            // Store success message in session
+            TempData["SuccessMessage"] = "Your request has been sent successfully!";
+
+            // Redirect to the Home page
+            return RedirectToAction("Index");
+        }
+
+
         [HttpOptions]
         public IActionResult GetOptions()
         {
