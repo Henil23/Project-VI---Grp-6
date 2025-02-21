@@ -1,11 +1,16 @@
 ﻿@{
     Layout = "_Layout";
-    var studentId = ViewBag.StudentId; // Ensure this is passed from the controller
 }
 
 <div class="signin-form-container">
     <div class="signin-form">
         <h1 class="form-title">Delete Account Confirmation</h1>
+        @if (!string.IsNullOrEmpty(ViewBag.Message))
+        {
+            <div id="delete-message" style="color: @(ViewBag.Message.Contains("Error") ? "red" : "green");">
+                @ViewBag.Message
+            </div>
+        }
         <div class="form-group">
             <label>Are you sure you want to delete your account?</label>
         </div>
@@ -17,20 +22,22 @@
 </div>
 
 <script>
-    document.getElementById("delete-btn").addEventListener("click", function (event) {
+       document.getElementById("delete-btn").addEventListener("click", function (event) {
         event.preventDefault(); // Prevent default button behavior
 
-        fetch('/Student/DeleteStudent?Id=@studentId', {
+        fetch(`/Employer/DeleteEmployer`, {
             method: 'DELETE'
         })
-        .then(response => {
-            if (response.status === 204) {
-                document.getElementById("delete-message").innerHTML = "<p style='color: green;'>Account deleted successfully.</p>";
+        .then(response => response.json())
+        .then(data => {
+            let messageContainer = document.getElementById("delete-message");
+            messageContainer.innerHTML = `<p style="color: ${data.success ? 'green' : 'red'};">${data.message}</p>`;
+
+            if (data.success) {
                 setTimeout(() => { window.location.href = "/Home/Index"; }, 2000);
-            } else {
-                document.getElementById("delete-message").innerHTML = "<p style='color: red;'>Failed to delete account.</p>";
             }
         })
         .catch(error => console.error("Error:", error));
     });
+
 </script>

@@ -2,16 +2,19 @@
 using JobApplicationPortal.Models;
 using JobApplicationPortal.Services;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace JobApplicationPortal.Controllers
 {
     public class EmployerController : Controller
     {
         private readonly IEmployerService _employerService;
+        private readonly IMemoryCache _memoryCache;
 
-        public EmployerController(IEmployerService employerService)
+        public EmployerController(IEmployerService employerService, IMemoryCache memoryCache)
         {
             _employerService = employerService;
+            _memoryCache = memoryCache;
         }
 
         public IActionResult SignIn()
@@ -20,7 +23,7 @@ namespace JobApplicationPortal.Controllers
         }
         //NEEDS TO BE A DELETE REQUEST
         [HttpGet]
-        public IActionResult DeleteEmployerForm()
+        public IActionResult DeleteEmployerInfo()
         {
             return View("DeleteEmployerInfo");
         }
@@ -43,14 +46,27 @@ namespace JobApplicationPortal.Controllers
             await _employerService.CreateEmployerAsync(employer);
 
             HttpContext.Session.SetString("FirstName", employer.FirstName);
-            HttpContext.Session.SetString("IsSignedIn", employer.IsSignedIn.ToString());
+            HttpContext.Session.SetString("Email", employer.EmployerEmail);
+            HttpContext.Session.SetString("Password", employer.EmployerPassword);
+
+            // caching firstname of employer for 5 minutes
+            _memoryCache.Set("CachedEmployerEmail", employer.EmployerEmail, new MemoryCacheEntryOptions()
+            .SetSlidingExpiration(TimeSpan.FromMinutes(5)));
 
             return View("~/Views/Home/PostJob.cshtml");
         }
 
         [HttpGet]
-        public async Task<IActionResult> EditEmployer(string email)
+        public async Task<IActionResult> EditEmployer()
         {
+            string? email = null;
+            // Try getting student ID from cache
+            if (_memoryCache.TryGetValue("CachedEmployerEmail", out string cachedEmail))
+            {
+                email = cachedEmail;
+            }
+            else return NotFound();
+
             var employer = await _employerService.GetEmployerByEmailAsync(email);
             if (employer == null)
             {
@@ -66,9 +82,15 @@ namespace JobApplicationPortal.Controllers
             if (!ModelState.IsValid)
             {
                 return View("EditEmployer", updatedEmployer);
+                // return NoContent();
             }
 
-            var result = await _employerService.UpdateEmployerAsync(updatedEmployer.EmployerEmail, updatedEmployer);
+            string email = _memoryCache.Get("CachedEmployerEmail").ToString();
+            if (!string.IsNullOrEmpty(email))
+            {
+                email = HttpContext.Session.Get("Email").ToString();
+            }
+            var result = await _employerService.UpdateEmployerAsync(email, updatedEmployer);
 
             if (result)
             {
@@ -102,29 +124,37 @@ namespace JobApplicationPortal.Controllers
             }
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteEmployer(string email, string password)
+        [HttpDelete]
+        public async Task<IActionResult> DeleteEmployer(/*string email, *//*string password*/)
         {
+
+            string? employerEmail = string.Empty;
+            string? employerPassword = HttpContext.Session.GetString("Password");
             if (ModelState.IsValid)
             {
-                var isDeleted = await _employerService.DeleteEmployerAsync(email, password);
-
-                if (isDeleted)
+                if (_memoryCache.TryGetValue("CachedEmployerEmail", out string cachedEmail))
                 {
-                    ViewBag.Message = "Employer account has been deleted successfully.";
+                    employerEmail = cachedEmail;
                 }
                 else
                 {
-                    ViewBag.Message = "Error: No employer found with the provided email and password.";
+                    employerEmail = HttpContext.Session.Get("Password").ToString();
                 }
+                var isDeleted = await _employerService.DeleteEmployerAsync(employerEmail, employerPassword);
 
-                return View("DeleteEmployerInfo");
+                if (isDeleted)
+                {
+                    HttpContext.Session.Clear();
+                    return Json(new { success = true, message = "Employer account has been deleted successfully." });
+                }
+                else
+                {
+                    return Json(new { success = false, message = "Error: No employer found with the provided email." });
+                }
             }
             else
             {
-                ViewBag.Message = "Error: Employer information is incomplete or invalid.";
-                return View("DeleteEmployerInfo");
+                return NoContent();
             }
         }
 

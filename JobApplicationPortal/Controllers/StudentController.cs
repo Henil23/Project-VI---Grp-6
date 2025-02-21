@@ -5,17 +5,20 @@ using System.Threading.Tasks;
 using MongoDB.Bson;
 using JobApplicationPortal.Repo;
 using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace JobApplicationPortal.Controllers
 {
     public class StudentController : Controller
     {
         private readonly IStudentService _studentService;
+        private readonly IMemoryCache _memoryCache;
 
         // Constructor injection for IStudentService
-        public StudentController(IStudentService studentService)
+        public StudentController(IStudentService studentService, IMemoryCache memoryCache)
         {
             _studentService = studentService;
+            _memoryCache = memoryCache ?? throw new ArgumentNullException(nameof(memoryCache));
         }
 
         // GET: Show sign-in form
@@ -24,53 +27,75 @@ namespace JobApplicationPortal.Controllers
             return View();
         }
 
-        public IActionResult UpdateStudent()
+        [HttpGet]
+        public async Task<IActionResult> UpdateStudent()
         {
-            return View();
+            string studentID = HttpContext.Session.GetString("studentID");
+
+            if (string.IsNullOrEmpty(studentID))
+            {
+                TempData["ErrorMessage"] = "Session expired. Please sign in again.";
+                return RedirectToAction("SignIn");
+            }
+
+            var previousStudentRecords = await _studentService.GetStudentByIdAsync(studentID);
+
+            if (previousStudentRecords == null)
+            {
+                return View(); // Handle case where student doesn't exist
+            }
+
+            return View(previousStudentRecords);
         }
 
         [HttpPatch]
+        [ValidateAntiForgeryToken]  // Ensure CSRF token is validated
         public async Task<IActionResult> UpdateStudent([FromBody] JsonPatchDocument<Student> studentPatch)
         {
-            // checks if PATCH request is empty
             if (studentPatch == null)
+                return BadRequest("Invalid patch request");
+
+            string studentId = HttpContext.Session.GetString("studentID");
+            if (string.IsNullOrEmpty(studentId))
+                return BadRequest("Student ID not found in session.");
+
+            // Retrieve the student from the service
+            var student = await _studentService.GetStudentByIdAsync(studentId);
+            if (student == null)
+                return NotFound("Student not found");
+
+            // Exclude the CSRF token from being patched
+            var tokenPath = studentPatch.Operations.FirstOrDefault(op => op.path.Contains("__RequestVerificationToken"));
+            if (tokenPath != null)
             {
-                return BadRequest();
+                studentPatch.Operations.Remove(tokenPath);  // Remove CSRF token from the operations
             }
 
-            string? studentId = HttpContext.Session.GetString("studentID");
-            Student? currentStudent = await _studentService.GetStudentByIdAsync(studentId);
+            // Apply the patch to the student object
+            studentPatch.ApplyTo(student, ModelState);
 
-            // unable to find or student is not registered
-            if (currentStudent == null)
+            if (!TryValidateModel(student))
             {
-                TempData["ErrorMessage"] = "You are not logged in";
-                return BadRequest(new { message = "You are not logged in" });
+                return BadRequest(new { errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage) });
             }
 
-            // applying json format to model state
-            studentPatch.ApplyTo(currentStudent, ModelState);
+            // Update the student in the database
+            await _studentService.UpdateStudentAsync(studentId, student);
 
-            // validating inputs ensures that all inputs are filled
-            if (!TryValidateModel(currentStudent))
-            {
-                return BadRequest(ModelState);
-            }
-
-            await _studentService.UpdateStudentAsync(studentId, currentStudent);
-            return Ok(currentStudent);
+            // Return the updated student object
+            return Ok(student);
         }
 
 
         [HttpGet()]
         public IActionResult DeleteStudentForm()
         {
-            return View("DeleteStudentInfo");
+            return View();
         }
 
         // POST: Handle student form submission
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        //[ValidateAntiForgeryToken]
         public async Task<IActionResult> SubmitStudentForm(Student student)
         {
             //student.StudentID = ObjectId.GenerateNewId().ToString();
@@ -88,8 +113,11 @@ namespace JobApplicationPortal.Controllers
 
             // Store data in session
             HttpContext.Session.SetString("FirstName", student.FirstName);
-            HttpContext.Session.SetString("IsSignedIn", student.IsSignedIn.ToString());
             HttpContext.Session.SetString("studentID", student.StudentID);
+
+            // Cache the student object (single student at a time)
+            _memoryCache.Set("CachedStudentID", student.StudentID, new MemoryCacheEntryOptions()
+            .SetSlidingExpiration(TimeSpan.FromMinutes(5)));
 
             // Redirect to success page or student dashboard
             return RedirectToAction("Index", "Jobs");
@@ -97,46 +125,74 @@ namespace JobApplicationPortal.Controllers
 
         // PUT: Modify/Update the Entire Student's Details
         [HttpPut]
-        public async Task<IActionResult> UpdateStudent([FromBody] Student student)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateStudentPut([FromBody] Student studentData)
         {
-            if (student == null || string.IsNullOrEmpty(student.StudentID))
+            if (studentData == null)
             {
                 return BadRequest("Invalid student data.");
             }
 
-            string? studentId = HttpContext.Session.GetString("studentID");
-            if (studentId == null || studentId != student.StudentID)
+            string studentId = HttpContext.Session.GetString("studentID");
+            if (string.IsNullOrEmpty(studentId))
             {
-                return Unauthorized("You are not authorized to update this student.");
+                return BadRequest("Student ID not found in session.");
             }
 
-            Student? existingStudent = await _studentService.GetStudentByIdAsync(studentId);
-            if (existingStudent == null)
+            // Retrieve the student from the service
+            var student = await _studentService.GetStudentByIdAsync(studentId);
+            if (student == null)
             {
-                return NotFound("Student not found.");
+                return NotFound("Student not found");
             }
 
-            existingStudent.FirstName = student.FirstName ?? existingStudent.FirstName;
-            existingStudent.LastName = student.LastName ?? existingStudent.LastName;
-            existingStudent.StudentEmail = student.StudentEmail ?? existingStudent.StudentEmail;
-            existingStudent.StudentDOB = student.StudentDOB ?? existingStudent.StudentDOB;
-            existingStudent.StudentAddress = student.StudentAddress ?? existingStudent.StudentAddress;
-            existingStudent.StudentCity = student.StudentCity ?? existingStudent.StudentCity;
-            existingStudent.StudentCountry = student.StudentCountry ?? existingStudent.StudentCountry;
-            existingStudent.School = student.School ?? existingStudent.School;
+            // Replace all fields with the new data
+            student.FirstName = studentData.FirstName;
+            student.LastName = studentData.LastName;
+            student.StudentEmail = studentData.StudentEmail;
+            student.StudentDOB = studentData.StudentDOB;
+            student.StudentAddress = studentData.StudentAddress;
+            student.StudentCity = studentData.StudentCity;
+            student.StudentCountry = studentData.StudentCountry;
+            student.School = studentData.School;
+            student.StudentPassword = studentData.StudentPassword;
 
-            await _studentService.UpdateStudentAsync(studentId, existingStudent);
-            return Ok(existingStudent);
+            // Validate model
+            if (!TryValidateModel(student))
+            {
+                return BadRequest(new { errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage) });
+            }
+
+            // Update student in the database
+            await _studentService.UpdateStudentAsync(studentId, student);
+
+            return Ok(student);
         }
+
 
         [HttpDelete]
         public async Task<IActionResult> DeleteStudent()
         {
-            string? studentID = HttpContext.Session.GetString("studentID");
+            string? studentID = null;
 
-            if (studentID != null)
+            // Try getting student ID from cache
+            if (_memoryCache.TryGetValue("CachedStudentID", out string cachedStudentID))
             {
+                studentID = cachedStudentID;
+            }
 
+            // If student ID is not found in cache, fallback to session
+            if (string.IsNullOrEmpty(studentID))
+            {
+                studentID = HttpContext.Session.GetString("studentID");
+            }
+
+            if (!string.IsNullOrEmpty(studentID))
+            {
+                // Remove from cache
+                _memoryCache.Remove("CachedStudentID");
+
+                // Proceed with database deletion
                 var result = await _studentService.DeleteStudentAsync(studentID);
 
                 if (result == null)
@@ -144,19 +200,13 @@ namespace JobApplicationPortal.Controllers
                     return NotFound();
                 }
 
-                // removes all the student info
-                HttpContext.Session.Remove("studentID");
-                HttpContext.Session.Remove("FirstName");
-                HttpContext.Session.Remove("IsSignedIn");
+                // Clear session data
+                HttpContext.Session.Clear();
 
-                // Redirect to homepage
-                return RedirectToAction("Index", "Home");
+                return NoContent(); // 204 No Content
             }
 
-            else
-            {
-                return NotFound();
-            }
+            return NotFound("Student not found or not logged in");
         }
 
         //option method implemented

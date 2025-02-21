@@ -10,7 +10,7 @@
     <header>
         <h1>Job Portal</h1>
         <nav>
-            @if (ViewData["IsSignedIn"] != null && ViewData["IsSignedIn"].ToString() == "True")
+            @if (ViewData["IsSignedIn"] != null)
             {
                 <span>Welcome, @ViewData["FirstName"]!</span>
             }

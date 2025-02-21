@@ -24,8 +24,11 @@
                     <p><strong>Company:</strong> @job.CompanyName</p>
                     <p><strong>Location:</strong> @job.Location</p>
                     <p><strong>Description:</strong> @job.JobDescription</p>
-
-                    <button class="apply-btn">Apply</button>
+                    <button class="apply-btn">
+                        <a href="mailto:employer@abctech.com?subject=Job,%0A%0AI I am interested in the position. Please find my resume attached.%0A%0AKind regards,%0A[Your Name]" target="_blank">
+                            Apply
+                        </a>
+                    </button>
                 </div>
             }
         }

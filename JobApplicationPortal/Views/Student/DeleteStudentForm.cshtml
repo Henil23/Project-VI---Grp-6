@@ -1,0 +1,37 @@
+﻿@{
+    Layout = "_Layout";
+    var studentId = ViewBag.StudentId; // Ensure this is passed from the controller
+}
+
+<div class="signin-form-container">
+    <div class="signin-form">
+        <h1 class="form-title">Delete Account Confirmation</h1>
+        <div class="form-group">
+            <label>Are you sure you want to delete your account?</label>
+        </div>
+        <div class="form-group">
+            <button id="delete-btn" class="submit-btn btn-danger">Delete</button>
+        </div>
+        <div id="delete-message"></div>
+    </div>
+</div>
+
+<script>
+    document.getElementById("delete-btn").addEventListener("click", function (event) {
+        event.preventDefault(); // Prevent default button behavior
+
+        // Send DELETE request
+        fetch(`/Student/DeleteStudent`, {
+            method: 'DELETE'
+        })
+        .then(response => {
+            if (response.ok) {
+                document.getElementById("delete-message").innerHTML = "<p style='color: green;'>Account deleted successfully.</p>";
+                setTimeout(() => { window.location.href = "/Home/Index"; }, 2000);
+            } else {
+                document.getElementById("delete-message").innerHTML = "<p style='color: red;'>Failed to delete account.</p>";
+            }
+        })
+        .catch(error => console.error("Error:", error));
+    });
+</script>

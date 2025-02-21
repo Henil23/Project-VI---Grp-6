@@ -1,4 +1,6 @@
-﻿@{
+﻿@model Student
+
+@{
     Layout = "_Layout";
     var message = ViewBag.ErrorMessage;
 }
@@ -7,31 +9,31 @@
     <div class="signin-form">
         <h1 class="form-title">Update Your Account</h1>
         <p>@TempData["ErrorMessage"]</p>
-        <form id="updateStudentForm">
+        <form id="updateStudentForm" method="post" action="@Url.Action("UpdateStudent", "Student")">
             @Html.AntiForgeryToken()
             <div class="form-group">
-                <input type="text" id="FirstName" name="FirstName" placeholder="First Name" required />
+                <input type="text" id="FirstName" value="@Model.FirstName" name="FirstName" placeholder="First Name" required />
             </div>
             <div class="form-group">
-                <input type="text" id="LastName" name="LastName" placeholder="Last Name" required />
+                <input type="text" id="LastName" value="@Model.LastName" name="LastName" placeholder="Last Name" required />
             </div>
             <div class="form-group">
-                <input type="email" id="StudentEmail" name="StudentEmail" placeholder="Email" required />
+                <input type="email" id="StudentEmail" value="@Model.StudentEmail" name="StudentEmail" placeholder="Email" required />
             </div>
             <div class="form-group">
-                <input type="date" id="StudentDOB" name="StudentDOB" required />
+                <input type="date" id="StudentDOB" value="@Model.StudentDOB?.ToString("yyyy-MM-dd")" name="StudentDOB" required />
             </div>
             <div class="form-group">
-                <input type="text" id="StudentAddress" name="StudentAddress" placeholder="Address" required />
+                <input type="text" id="StudentAddress" value="@Model.StudentAddress" name="StudentAddress" placeholder="Address" required />
             </div>
             <div class="form-group">
-                <input type="text" id="StudentCity" name="StudentCity" placeholder="City" required />
+                <input type="text" id="StudentCity" value="@Model.StudentCity" name="StudentCity" placeholder="City" required />
             </div>
             <div class="form-group">
-                <input type="text" id="StudentCountry" name="StudentCountry" placeholder="Country" required />
+                <input type="text" id="StudentCountry" value="@Model.StudentCountry" name="StudentCountry" placeholder="Country" required />
             </div>
             <div class="form-group">
-                <select id="School" name="School" required>
+                <select id="School" name="School" asp-for="School" class="form-control" asp-items="ViewBag.Schools" required>
                     <option value="" disabled selected>Post-Secondary Institution</option>
                     <option value="conestoga">Conestoga College</option>
                     <option value="waterloo university">University of Waterloo</option>
@@ -40,100 +42,91 @@
                 </select>
             </div>
             <div class="form-group">
-                <input type="password" id="StudentPassword" name="StudentPassword" placeholder="Password" required />
+                <input type="password" value="@Model.StudentPassword" id="StudentPassword" name="StudentPassword" placeholder="Password" required />
             </div>
             <div class="form-group">
-                <button type="submit" class="submit-btn">Submit</button>
+                <button id="updateSpecificFields" type="button" class="submit-btn">Update</button>
+                <button id="updateFull" type="button" class="submit-btn">Full Update</button>
             </div>
         </form>
         <div class="student-option-links">
-            <a href="@Url.Action("DeleteStudentForm","Student")">Delete Account</a>
+            <a href="@Url.Action("DeleteStudentForm", "Student")">Delete Account</a>
         </div>
     </div>
 </div>
 
 <script>
-    // PUT: Modify the entire student's detail
-    document.getElementById("updateStudentForm").addEventListener("submit", async function(event) {
-        event.preventDefault(); // Prevent the form from submitting the normal way
+    document.getElementById("updateSpecificFields").addEventListener("click", async function(event) {
+        event.preventDefault();
 
-        const formData = new FormData(this);
+        // Collect form data
+        const formData = new FormData(document.getElementById("updateStudentForm"));
         const studentData = {};
-
-        // Convert form data to JSON
         formData.forEach((value, key) => {
             studentData[key] = value;
         });
 
-        // Prepare the JSON PUT document
-        const putDocument = [
-            { "op": "replace", "path": "/FirstName", "value": studentData.FirstName },
-            { "op": "replace", "path": "/LastName", "value": studentData.LastName },
-            { "op": "replace", "path": "/StudentEmail", "value": studentData.StudentEmail },
-            { "op": "replace", "path": "/StudentDOB", "value": studentData.StudentDOB },
-            { "op": "replace", "path": "/StudentAddress", "value": studentData.StudentAddress },
-            { "op": "replace", "path": "/StudentCity", "value": studentData.StudentCity },
-            { "op": "replace", "path": "/StudentCountry", "value": studentData.StudentCountry },
-            { "op": "replace", "path": "/School", "value": studentData.School },
-            { "op": "replace", "path": "/StudentPassword", "value": studentData.StudentPassword }
-        ];
-
-        // Get the CSRF token using vanilla JavaScript
-        const csrfToken = document.querySelector('input[name="__RequestVerificationToken"]').value;
-
-        // Send the PUT request
-        const response = await fetch('@Url.Action("UpdateStudent", "Student")', {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'RequestVerificationToken': csrfToken // Add CSRF token
-            },
-            body: JSON.stringify(patchDocument)
-        });
-
-        const result = await response.json();
-
-        if (response.ok) {
-            // Handle successful update
-            alert('Student updated successfully');
-        } else {
-            // Handle errors
-            alert('Error updating student: ' + result.errors);
-        }
-    });
-
-    // PATCH: Modifies details those selected by the student, the rest will stay unchanged.
-    document.getElementById("updateSpecificFields").addEventListener("click", async function() {
-        const formData = new FormData(document.getElementById("updateStudentForm"));
-        const patchDocument = [];
-
-        formData.forEach((value, key) => {
-            if (value.trim() !== "")
-                patchDocument.push({ "op": "replace", "path": `/${key}`, "value": value });
-        });
-
-        if (patchDocument.length === 0) {
-            alert("No fields provided to update.");
-            return;
+        // Prepare the payload for PATCH
+        const documentToSend = [];
+        for (const [key, value] of Object.entries(studentData)) {
+            if (value.trim() !== "") {
+                documentToSend.push({ "op": "replace", "path": `/${key}`, "value": value });
+            }
         }
 
         const csrfToken = document.querySelector('input[name="__RequestVerificationToken"]').value;
 
+        // Send PATCH request
         const response = await fetch('@Url.Action("UpdateStudent", "Student")', {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
                 'RequestVerificationToken': csrfToken
             },
-            body: JSON.stringify(patchDocument)
+            body: JSON.stringify(documentToSend)
         });
 
         const result = await response.json();
 
-        if (response.ok)
-            alert("Selected fields updated successfully");
-        else
-            alert("Error updating student: " + result.errors);
+        if (response.ok) {
+            alert("Student updated successfully");
+            window.location.reload(); // Refresh the page after success
+        } else {
+            alert('Error: ' + result.errors.join(", "));
+        }
+    });
 
+        document.getElementById("updateFull").addEventListener("click", async function(event) {
+        event.preventDefault();
+
+        const formData = new FormData(document.getElementById("updateStudentForm"));
+        const studentData = {};
+        formData.forEach((value, key) => {
+            studentData[key] = value;
+        });
+
+        // Prepare the payload for PUT (full update)
+        const documentToSend = Object.entries(studentData).map(([key, value]) => {
+            return { "op": "replace", "path": `/${key}`, "value": value };
+        });
+
+        const csrfToken = document.querySelector('input[name="__RequestVerificationToken"]').value;
+
+        const response = await fetch('@Url.Action("UpdateStudentPut", "Student")', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'RequestVerificationToken': csrfToken
+            },
+            body: JSON.stringify(studentData)
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            alert("Student updated successfully");
+        } else {
+            alert('Error: ' + result.errors);
+        }
     });
 </script>
